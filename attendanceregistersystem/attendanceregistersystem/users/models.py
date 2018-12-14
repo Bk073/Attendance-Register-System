@@ -25,7 +25,7 @@ class Role(models.Model):
 
 class Branch(models.Model):
     branch_id = models.AutoField(primary_key=True)
-    branch_name = models.CharField(max_length=255,blank=False, null=False, default='Management')
+    branch_name = models.CharField(max_length=255, blank=False, null=False, default='Management')
 
 class User(AbstractUser):
 
