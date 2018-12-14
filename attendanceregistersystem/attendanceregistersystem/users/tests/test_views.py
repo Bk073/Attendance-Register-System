@@ -2,8 +2,7 @@ import pytest
 from django.conf import settings
 from django.test import RequestFactory
 
-from attendanceregistersystem.users.views import UserRedirectView, UserUpdateView
-
+from attendanceregistersystem.users.views import UserRedirectView, UserUpdateView, UserLoginView
 pytestmark = pytest.mark.django_db
 
 
@@ -51,3 +50,26 @@ class TestUserRedirectView:
         view.request = request
 
         assert view.get_redirect_url() == f"/users/{user.username}/"
+
+
+class TestLoginView:
+
+    def test_user_login_token(
+        self, user: settings.AUTH_USER_MODEL, request_factory: RequestFactory
+    ):
+        view = UserLoginView()
+        request = request_factory.get("/fake-url")
+        request.user = user
+
+        view.request = request
+        assert view.post(request) == f""
+
+
+# wrong data should raise exception, status code should be 4XX
+# right data should give correct token key, status should be 200
+# token if doesnt exist, should be created for the user
+# token if exists already, it should return that token and in successive calls
+# not-existing user should throw error
+# 
+
+

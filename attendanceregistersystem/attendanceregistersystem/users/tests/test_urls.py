@@ -26,3 +26,7 @@ def test_update():
 def test_redirect():
     assert reverse("users:redirect") == "/users/~redirect/"
     assert resolve("/users/~redirect/").view_name == "users:redirect"
+
+def test_login():
+    assert reverse("users:login") == "/users/v1/login/"
+    assert resolve("/users/v1/login/").view_name == "users:login"
