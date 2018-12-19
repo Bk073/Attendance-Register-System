@@ -5,25 +5,26 @@ from django.contrib.auth.models import Group
 from rest_framework import exceptions
 
 
-class GroupSerializer(serializers.ModelSerializer):    
-    class Meta:
-        model = Group
-        fields = ('name',)
+# class GroupSerializer(serializers.ModelSerializer):    
+#     class Meta:
+#         model = Group
+#         fields = ('name',)
 
 
 class UserSerializers(serializers.ModelSerializer):
-groups = GroupSerializer(many=True)
+    # groups = GroupSerializer(many=True)
 
-class Meta:
-    model = User
-    fields = ('first_name', 'last_name','address','contact', 'email', 'date_of_birth', 'branch', 'groups')
+    class Meta:
+        model = User
+        fields = ('username','first_name', 'last_name','address','contact', 'email', 'date_of_birth', 'branch', 'groups')
 
-def create(self, validated_data):
-    groups_data = validated_data.pop('groups')
-    user = User.objects.create(**validated_data)
-    for group_data in groups_data:
-        Group.objects.create(user=user, **group_data)
-    return user
+    def create(self, validated_data):
+        groups_data = validated_data.pop('groups')
+        user = User.objects.create(**validated_data)
+        for group_data in groups_data:
+            # Group.objects.create(user=user, **group_data)
+            user.groups.add(group_data)
+        return user
 
     
 # class UserSerializers(serializers.ModelSerializer):
