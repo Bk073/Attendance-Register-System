@@ -3,8 +3,44 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.views.generic import DetailView, ListView, RedirectView, UpdateView
 from django.contrib.auth.views import LoginView
-from .serializers import UserLoginSerializers
+from rest_framework import generics
+from .serializers import UserLoginSerializers, UserSerializers
+from django.views.decorators.csrf import ensure_csrf_cookie
+from rest_framework.permissions import AllowAny
 User = get_user_model()
+from rest_framework import status
+
+# use generics. views
+# previously used ModelViewSet
+
+class UserCreateView(generics.CreateAPIView):
+    permission_classes = (AllowAny,)
+    serializer_class = UserSerializers
+    
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
+
+
+user_create_view = UserCreateView.as_view()
+
+
+class UserListView(generics.ListAPIView):
+    permission_classes= (AllowAny,)
+    serializer_class = UserSerializers
+    
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def get_queryset(self):
+        user = self.request.user
+        return user.groups.all()
+
+
+user_list_view = UserListView.as_view()
 
 
 class UserDetailView(LoginRequiredMixin, DetailView):
@@ -17,15 +53,15 @@ class UserDetailView(LoginRequiredMixin, DetailView):
 user_detail_view = UserDetailView.as_view()
 
 
-class UserListView(LoginRequiredMixin, ListView):
+# class UserListView(LoginRequiredMixin, ListView):
 
     
-    model = User
-    slug_field = "username"
-    slug_url_kwarg = "username"
+#     model = User
+#     slug_field = "username"
+#     slug_url_kwarg = "username"
 
 
-user_list_view = UserListView.as_view()
+# user_list_view = UserListView.as_view()
 
 
 class UserUpdateView(LoginRequiredMixin, UpdateView):

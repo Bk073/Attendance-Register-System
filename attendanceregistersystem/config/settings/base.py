@@ -69,6 +69,7 @@ THIRD_PARTY_APPS = [
     'allauth.socialaccount',
     'rest_framework',
     'rest_framework.authtoken',
+    'rolepermissions',
 ]
 LOCAL_APPS = [
     'attendanceregistersystem.users.apps.UsersAppConfig',

@@ -1,15 +1,58 @@
 from rest_framework import serializers
 from .models import User
 from django.contrib.auth import authenticate
+from django.contrib.auth.models import Group
 from rest_framework import exceptions
 
 
-class UserSerializers(serializers.ModelSerializer):
-    first_name = serializers.ReadOnlyField()
-
+class GroupSerializer(serializers.ModelSerializer):    
     class Meta:
-        model = User
+        model = Group
+        fields = ('name',)
+
+
+class UserSerializers(serializers.ModelSerializer):
+groups = GroupSerializer(many=True)
+
+class Meta:
+    model = User
+    fields = ('first_name', 'last_name','address','contact', 'email', 'date_of_birth', 'branch', 'groups')
+
+def create(self, validated_data):
+    groups_data = validated_data.pop('groups')
+    user = User.objects.create(**validated_data)
+    for group_data in groups_data:
+        Group.objects.create(user=user, **group_data)
+    return user
+
+    
+# class UserSerializers(serializers.ModelSerializer):
+#     def create(self, validated_data):
+#         user = User.objects.create(**validated_data)
+#         group = Group.objects.get(name='Staff')
+#         #group.user_set.set(self.object)
+#         group.user_set.set(user)
+#         user.save()
+#         return user
+#     class Meta:
+#         model = User
+#         fields = (
+#             'password',
+#             'first_name',
+#             'last_name',
+#             'email',
+#             'groups',
+#         )
+
+    # def create(self, validated_data):
+    #     groups_data = validated_data.pop('groups')
+    #     album = Album.objects.create(**validated_data)
+    #     for track_data in tracks_data:
+    #         Track.objects.create(album=album, **track_data)
+    #     return album
         
+#handle group when saving
+#add user to group
 
 class UserLoginSerializers(serializers.Serializer):
     email = serializers.CharField()

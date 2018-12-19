@@ -1,0 +1,49 @@
+                         List of relations
+ Schema |                 Name                 |   Type   | Owner  
+--------+--------------------------------------+----------+--------
+ public | account_emailaddress                 | table    | bishwa
+ public | account_emailaddress_id_seq          | sequence | bishwa
+ public | account_emailconfirmation            | table    | bishwa
+ public | account_emailconfirmation_id_seq     | sequence | bishwa
+ public | auth_group                           | table    | bishwa
+ public | auth_group_id_seq                    | sequence | bishwa
+ public | auth_group_permissions               | table    | bishwa
+ public | auth_group_permissions_id_seq        | sequence | bishwa
+ public | auth_permission                      | table    | bishwa
+ public | auth_permission_id_seq               | sequence | bishwa
+ public | authtoken_token                      | table    | bishwa
+ public | django_admin_log                     | table    | bishwa
+ public | django_admin_log_id_seq              | sequence | bishwa
+ public | django_content_type                  | table    | bishwa
+ public | django_content_type_id_seq           | sequence | bishwa
+ public | django_migrations                    | table    | bishwa
+ public | django_migrations_id_seq             | sequence | bishwa
+ public | django_session                       | table    | bishwa
+ public | django_site                          | table    | bishwa
+ public | django_site_id_seq                   | sequence | bishwa
+ public | socialaccount_socialaccount          | table    | bishwa
+ public | socialaccount_socialaccount_id_seq   | sequence | bishwa
+ public | socialaccount_socialapp              | table    | bishwa
+ public | socialaccount_socialapp_id_seq       | sequence | bishwa
+ public | socialaccount_socialapp_sites        | table    | bishwa
+ public | socialaccount_socialapp_sites_id_seq | sequence | bishwa
+ public | socialaccount_socialtoken            | table    | bishwa
+ public | socialaccount_socialtoken_id_seq     | sequence | bishwa
+ public | users_attendance                     | table    | bishwa
+ public | users_attendance_id_seq              | sequence | bishwa
+ public | users_branch                         | table    | bishwa
+ public | users_branch_branch_id_seq           | sequence | bishwa
+ public | users_leaverequest                   | table    | bishwa
+ public | users_leaverequest_leave_id_seq      | sequence | bishwa
+ public | users_typesofleave                   | table    | bishwa
+ public | users_typesofleave_type_id_seq       | sequence | bishwa
+ public | users_user                           | table    | bishwa
+ public | users_user_groups                    | table    | bishwa
+ public | users_user_groups_id_seq             | sequence | bishwa
+ public | users_user_id_seq                    | sequence | bishwa
+ public | users_user_user_permissions          | table    | bishwa
+ public | users_user_user_permissions_id_seq   | sequence | bishwa
+ public | users_userdays                       | table    | bishwa
+ public | users_userdays_id_seq                | sequence | bishwa
+(44 rows)
+

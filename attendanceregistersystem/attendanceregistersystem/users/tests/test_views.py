@@ -1,8 +1,9 @@
 import pytest
 from django.conf import settings
 from django.test import RequestFactory
+from rest_framework import status
 
-from attendanceregistersystem.users.views import UserRedirectView, UserUpdateView, UserLoginView
+from attendanceregistersystem.users.views import UserRedirectView, UserUpdateView, UserLoginView, UserCreateView
 pytestmark = pytest.mark.django_db
 
 
@@ -65,6 +66,16 @@ class TestLoginView:
         assert view.post(request) == f""
 
 
+class TestUserCreateView:
+    def test_create_method(self, user: settings.AUTH_USER_MODEL, request_factory: RequestFactory):
+        view = UserCreateView
+        request = request_factory.post("/fake-url")
+        request.user = user
+
+        view.request = request
+        assert view.create(request) == status.HTTP_201_CREATED
+
+        
 # wrong data should raise exception, status code should be 4XX
 # right data should give correct token key, status should be 200
 # token if doesnt exist, should be created for the user
