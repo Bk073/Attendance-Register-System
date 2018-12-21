@@ -11,6 +11,8 @@ User = get_user_model()
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
+from django.db.models.signals import post_save
+from django.utils.timezone import localdate, localtime, now
 
 # use generics. views
 # previously used ModelViewSet
@@ -97,7 +99,7 @@ from django.contrib.auth import login as django_login
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from attendanceregistersystem.attendance.models import Attendance
-from django.utils.timezone import localdate, localtime, now
+from attendanceregistersystem.attendance.views import MakeAttendance
 
 class UserLoginView(APIView):
     permission_classes = (AllowAny,) 
@@ -112,7 +114,8 @@ class UserLoginView(APIView):
         # a = Attendance.objects.get(user=request.user)
         # a.check_out = time
         # a.save()
-        Attendance.objects.create(user=user)
+        #Attendance.objects.get_or_create()
+        Attendance.objects.get_or_create(user=user, check_in_date=localdate(now())), 
         #Attendance.objects.get_or_create()
         #django_login(request, user)
         token, created = Token.objects.get_or_create(user=user)
@@ -120,7 +123,7 @@ class UserLoginView(APIView):
 
 user_login_view = UserLoginView.as_view()
 
-
+post_save.connect(MakeAttendance.make_attendance, sender=Token)
 
 # from django.contrib.auth import authenticate
 # from django.views.decorators.csrf import csrf_exempt
