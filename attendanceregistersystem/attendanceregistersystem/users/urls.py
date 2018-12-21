@@ -10,6 +10,7 @@ from attendanceregistersystem.users.views import (
     user_create_view,
 )
 
+
 app_name = "users"
 urlpatterns = [
     # path("", view=user_list_view, name="list"),

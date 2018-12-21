@@ -9,6 +9,8 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework.permissions import AllowAny
 User = get_user_model()
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import TokenAuthentication
 
 # use generics. views
 # previously used ModelViewSet
@@ -97,9 +99,11 @@ from rest_framework.response import Response
 
 
 class UserLoginView(APIView):
-    
+    permission_classes = (AllowAny,) 
+    authentication_classes = (TokenAuthentication,) 
+
     def post(self, request):
-        serializer = UserLoginSerializer(data=request.data)
+        serializer = UserLoginSerializers(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data["user"]    
         #django_login(request, user)

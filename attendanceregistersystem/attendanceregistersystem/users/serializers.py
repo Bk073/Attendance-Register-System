@@ -16,7 +16,7 @@ class UserSerializers(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('username','first_name', 'last_name','address','contact', 'email', 'date_of_birth', 'branch', 'groups')
+        fields = ('username', 'password','first_name', 'last_name','address','contact', 'email', 'date_of_birth', 'branch', 'groups')
 
     def create(self, validated_data):
         groups_data = validated_data.pop('groups')
@@ -56,16 +56,16 @@ class UserSerializers(serializers.ModelSerializer):
 #add user to group
 
 class UserLoginSerializers(serializers.Serializer):
-    email = serializers.CharField()
+    username = serializers.CharField()
     password = serializers.CharField()
 
 
     def validate(self, data):
-        email = data.get("email", "")
+        username = data.get("username", "")
         password = data.get("password", "")
 
-        if email and password :
-            user = authenticate(email=email, password=password)
+        if username and password :
+            user = authenticate(username=username, password=password)
             if user:
                 if user.is_active:
                     data["user"] = user
