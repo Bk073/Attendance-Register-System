@@ -4,6 +4,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic import TemplateView
 from django.views import defaults as default_views
+from django.conf.urls import url
 
 urlpatterns = [
     # Django Admin, use {% url 'admin:index' %}
@@ -12,6 +13,10 @@ urlpatterns = [
     path(
         "users/",
         include("attendanceregistersystem.users.urls", namespace="users"),
+    ),
+    path(
+        "attend/",
+        include("attendanceregistersystem.attendance.urls", namespace="attendance"),
     ),
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here

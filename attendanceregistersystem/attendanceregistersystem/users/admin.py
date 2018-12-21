@@ -7,3 +7,9 @@ from .models import User, Branch
 
 admin.site.register(User)
 admin.site.register(Branch)
+<<<<<<< Updated upstream
+=======
+
+
+admin.site.register(Permission)
+>>>>>>> Stashed changes

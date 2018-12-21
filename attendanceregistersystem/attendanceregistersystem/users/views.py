@@ -96,7 +96,8 @@ from rest_framework.views import APIView
 from django.contrib.auth import login as django_login
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
-
+from attendanceregistersystem.attendance.models import Attendance
+from django.utils.timezone import localdate, localtime, now
 
 class UserLoginView(APIView):
     permission_classes = (AllowAny,) 
@@ -105,7 +106,14 @@ class UserLoginView(APIView):
     def post(self, request):
         serializer = UserLoginSerializers(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data["user"]    
+        user = serializer.validated_data["user"]   
+        # get Attendance object and save check_in_time and data
+        # get this attendance object and update check_out when checkouts
+        # a = Attendance.objects.get(user=request.user)
+        # a.check_out = time
+        # a.save()
+        Attendance.objects.create(user=user)
+        #Attendance.objects.get_or_create()
         #django_login(request, user)
         token, created = Token.objects.get_or_create(user=user)
         return Response({"token": token.key}, status=200)

@@ -1,4 +1,7 @@
 from django.db import models
+from attendanceregistersystem.users.models import User
+from django.db.models import CharField, IntegerField, EmailField, DateField, AutoField, ForeignKey, CASCADE
+
 
 class Attendance(models.Model):
     check_in = models.TimeField(auto_now=True)

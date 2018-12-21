@@ -16,7 +16,11 @@ class UserSerializers(serializers.ModelSerializer):
 
     class Meta:
         model = User
+<<<<<<< Updated upstream
         fields = ('username', 'password','first_name', 'last_name','address','contact', 'email', 'date_of_birth', 'branch', 'groups')
+=======
+        fields = ('username' ,'password' ,'first_name', 'last_name','address','contact', 'email', 'date_of_birth', 'branch', 'groups')
+>>>>>>> Stashed changes
 
     def create(self, validated_data):
         groups_data = validated_data.pop('groups')
@@ -59,12 +63,15 @@ class UserLoginSerializers(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField()
 
-
     def validate(self, data):
         username = data.get("username", "")
         password = data.get("password", "")
 
+<<<<<<< Updated upstream
         if username and password :
+=======
+        if email and password :
+>>>>>>> Stashed changes
             user = authenticate(username=username, password=password)
             if user:
                 if user.is_active:

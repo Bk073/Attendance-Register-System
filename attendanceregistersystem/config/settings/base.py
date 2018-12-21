@@ -64,15 +64,17 @@ DJANGO_APPS = [
 ]
 THIRD_PARTY_APPS = [
     'crispy_forms',
-    'allauth',
+    # 'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'rest_framework',
     'rest_framework.authtoken',
     'rolepermissions',
+    'rest_auth',
 ]
 LOCAL_APPS = [
     'attendanceregistersystem.users.apps.UsersAppConfig',
+    'attendanceregistersystem.attendance.apps.AttendanceConfig',
     # Your stuff: custom apps go here
     'phonenumber_field',
 ]
