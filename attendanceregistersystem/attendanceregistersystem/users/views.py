@@ -6,13 +6,15 @@ from django.contrib.auth.views import LoginView
 from rest_framework import generics
 from .serializers import UserLoginSerializers, UserSerializers
 from django.views.decorators.csrf import ensure_csrf_cookie
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 User = get_user_model()
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from django.db.models.signals import post_save
 from django.utils.timezone import localdate, localtime, now
+from djoser.views import TokenDestroyView
+from djoser import utils
 
 # use generics. views
 # previously used ModelViewSet
@@ -115,7 +117,7 @@ class UserLoginView(APIView):
         # a.check_out = time
         # a.save()
         #Attendance.objects.get_or_create()
-        Attendance.objects.get_or_create(user=user, check_in_date=localdate(now())), 
+        Attendance.objects.get_or_create(user=user, check_in_date=localdate(now())) 
         #Attendance.objects.get_or_create()
         #django_login(request, user)
         token, created = Token.objects.get_or_create(user=user)
@@ -124,6 +126,22 @@ class UserLoginView(APIView):
 user_login_view = UserLoginView.as_view()
 
 post_save.connect(MakeAttendance.make_attendance, sender=Token)
+
+
+
+class UserLogoutView(TokenDestroyView):
+
+    def post(self, request):
+        print("Hello djoser")
+        attendance = Attendance.objects.get(user=request.user, check_in_date=localdate(now()))
+        attendance.check_out = localtime(now())
+        attendance.save()
+        print(attendance)
+        print(attendance.check_out)
+        utils.logout_user(request)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+user_logout_view = UserLogoutView.as_view()
 
 # from django.contrib.auth import authenticate
 # from django.views.decorators.csrf import csrf_exempt

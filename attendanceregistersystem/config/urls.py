@@ -19,6 +19,8 @@ urlpatterns = [
         include("attendanceregistersystem.attendance.urls", namespace="attendance"),
     ),
     path("accounts/", include("allauth.urls")),
+    url(r'^auth/', include('djoser.urls')),
+    url(r'^auth/', include('djoser.urls.authtoken')),     
     # Your stuff: custom urls includes go here
 ] + static(
     settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
@@ -49,3 +51,4 @@ if settings.DEBUG:
         import debug_toolbar
 
         urlpatterns = [path("__debug__/", include(debug_toolbar.urls))] + urlpatterns
+
