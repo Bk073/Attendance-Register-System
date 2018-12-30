@@ -2,12 +2,13 @@ from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.permissions import AllowAny
 from rest_framework import status
-from .serializers import MakeAttendanceSerializer
+from .serializers import MakeAttendanceSerializer, MakeLeaveRequestSerializer
 from .permissions import AttendancePermissons
-from .models import Attendance
+from .models import Attendance, LeaveRequest
 from rest_framework.authtoken.models import Token
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.timezone import localdate, localtime, now
 
 # class MakeAttendance(generics.CreateAPIView):
@@ -34,3 +35,9 @@ class MakeAttendance(generics.ListCreateAPIView):
         attendance.check_in = localtime(now())
         # print(attendance.check_in_date)
         attendance.save()
+
+
+class MakeLeaveRequest(generics.CreateAPIView):
+    permission_classes = (AllowAny,)
+    serializer_class = MakeLeaveRequestSerializer
+    # login_url = '../../users/v1/login/'

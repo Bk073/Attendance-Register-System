@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Attendance
+from .models import Attendance, LeaveRequest
 from attendanceregistersystem.users.models import User
 
 class MakeAttendanceSerializer(serializers.ModelSerializer):
@@ -12,3 +12,8 @@ class MakeAttendanceSerializer(serializers.ModelSerializer):
         fields  = ('check_in', 'check_in_date', 'check_out', 'user',)
 
     
+class MakeLeaveRequestSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = LeaveRequest
+        fields = ('date_from', 'date_to', 'description', 'types_of_leave',)
