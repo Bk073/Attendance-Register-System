@@ -18,6 +18,9 @@ class Branch(models.Model):
 
     class Meta:
         default_permissions = ()
+    
+    def get_absolute_url(self):
+        return reverse("branch:detail", kwargs={"branchname": self.branch_name})
 
     # def get_absolute_url(self):
     #     return reverse("branch:detail", kwargs={"name": self.name})
