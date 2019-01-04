@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from attendanceregistersystem.attendance.views import MakeAttendance, MakeLeaveRequest, UserDays, AcceptRequest
+from attendanceregistersystem.attendance.views import MakeAttendance, MakeLeaveRequest, UserDays, AcceptRequest, UserAttendance
 
 app_name = "attendance"
 
@@ -23,5 +23,10 @@ urlpatterns = [
         r'v1/acceptRequest/<int:pk>',
         AcceptRequest.as_view(),
         name='acceptRequest'
+    ),
+    url(
+        r'v1/view-attendance',
+        UserAttendance.as_view(),
+        name='viewAttendance'
     ),
 ]

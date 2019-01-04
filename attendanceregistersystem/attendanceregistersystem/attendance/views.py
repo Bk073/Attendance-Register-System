@@ -58,6 +58,11 @@ class UserDays(generics.ListAPIView):
     serializer_class = UserDaySerializer
     queryset = UserDays.objects.all()
 
+class UserAttendance(generics.ListAPIView):
+    permission_classes = (AllowAny,)
+    serializer_class = MakeAttendanceSerializer
+    queryset = Attendance.objects.all()
+
 
 class MakeLeaveRequest(generics.CreateAPIView):
     permission_classes = (AllowAny,)
