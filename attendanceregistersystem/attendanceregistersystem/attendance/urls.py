@@ -20,7 +20,7 @@ urlpatterns = [
         name="userdays"
     ),
     url(
-        r'v1/acceptRequest/<int:pk>',
+        r"v1/acceptRequest/(?P<id>\d+)/(?P<status>accept|reject)", #send accept or reject also as kwargs
         AcceptRequest.as_view(),
         name='acceptRequest'
     ),

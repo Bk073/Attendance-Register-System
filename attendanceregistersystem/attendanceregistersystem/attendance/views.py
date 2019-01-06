@@ -83,13 +83,13 @@ post_save.connect(receiver=UserDay.post, sender=LeaveRequest)
 
 class AcceptRequest(APIView):
     
-    def get(self, request, *args, **kwargs):
-        id = kwargs.get('id', 'Default Value if not there')
+    def post(self, request, *args, **kwargs):
+        id = kwargs.get('id', 'Default Value if not there') # yo id user ko ho ki leave request model ko ?
+        status = kwargs.get('status', 'Default Value if not there')
         leave_request = LeaveRequest.objects.get(pk=pk)
         print(leave_request)
-        # if accept :
-        #     leave_request.status = 'accept'
-        
-        # else:
-        #     leave_request.status = 'reject'
+        if status == accept :
+            leave_request.status = 'accept'
+        else:
+            leave_request.status = 'reject'
 

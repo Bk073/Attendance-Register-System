@@ -24,7 +24,7 @@ urlpatterns = [
         name="login"
     ),
     path("v1/create/", view= user_create_view, name="create-user"),
-    path("v1/create/", view= user_list_view, name="list-user"),
+    path("v1/userlist/", view= user_list_view, name="list-user"),
     # url(
     #     r'^v1/logout/$',
     #     view = user_logout_view,

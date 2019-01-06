@@ -34,9 +34,10 @@ class User(AbstractUser):
     last_name = CharField(_("Last name of User"), blank=True, max_length=255)
     address = CharField(blank=True, max_length=255)
     # password = CharField(max_length=50)
-    contact = PhoneNumberField( max_length=13, help_text="Enter phone number with country code", null=True, blank=True)
+    # contact = PhoneNumberField( max_length=13, help_text="Enter phone number with country code", null=True, blank=True)
     #phone_number = forms.RegexField(regex=r'^\+?1?\d{9,15}$', 
     #                            error_message = ("Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."))
+    contact = IntegerField(max_length=13, help_text="Enter phone number with country code", null=True,  blank=True)
     email = EmailField(blank=True, null=True, verbose_name="Email")
     date_of_birth = DateField(blank=True, null=True)
     branch = ForeignKey(Branch, on_delete=CASCADE, null=True)
