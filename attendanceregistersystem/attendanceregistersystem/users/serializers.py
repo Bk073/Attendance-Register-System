@@ -3,7 +3,7 @@ from .models import User
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import Group, Permission
 from rest_framework import exceptions
-
+from django.contrib.auth.hashers import make_password
 
 class GroupSerializer(serializers.ModelSerializer):    
     class Meta:
@@ -34,6 +34,8 @@ class UserSerializers(serializers.ModelSerializer):
     def create(self, validated_data):
         groups_data = validated_data.pop('groups')
         user = User.objects.create(**validated_data)
+        user.password =make_password(validated_data.pop('password'))
+        user.save()
         for group_data in groups_data:
             # Group.objects.create(user=user, **group_data)
             user.groups.add(group_data)
