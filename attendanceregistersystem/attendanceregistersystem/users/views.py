@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.views.generic import DetailView, ListView, RedirectView, UpdateView
 from django.contrib.auth.views import LoginView
 from rest_framework import generics
-from .serializers import UserLoginSerializers, UserSerializers
+from .serializers import UserLoginSerializers, UserSerializers, GroupSerializer, PermissionSerializer
 from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework.permissions import AllowAny, IsAuthenticated
 User = get_user_model()
@@ -176,3 +176,36 @@ user_logout_view = UserLogoutView.as_view()
 #                     status=HTTP_200_OK)
 
 
+class GroupCreateView(generics.CreateAPIView):
+    permission_classes = (AllowAny,)
+    serializer_class = GroupSerializer
+    # login_url = '../../users/v1/login/'
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        # self.perform_create(serializer)
+        data = serializer.save()
+        print(data)
+        # headers = self.get_success_headers(serializer.data)
+        return Response({'ok':'ok'}, status=status.HTTP_201_CREATED)
+
+
+groups_create_view = GroupCreateView.as_view()
+
+class PermissionCreateView(generics.CreateAPIView):
+    permission_classes = (AllowAny,)
+    serializer_class = PermissionSerializer
+    # login_url = '../../users/v1/login/'
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        # self.perform_create(serializer)
+        data = serializer.save()
+        print(data)
+        # headers = self.get_success_headers(serializer.data)
+        return Response({'ok':'ok'}, status=status.HTTP_201_CREATED)
+
+
+permission_create_view = PermissionCreateView.as_view()

@@ -1,14 +1,27 @@
 from rest_framework import serializers
 from .models import User
 from django.contrib.auth import authenticate
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, Permission
 from rest_framework import exceptions
 
 
-# class GroupSerializer(serializers.ModelSerializer):    
-#     class Meta:
-#         model = Group
-#         fields = ('name',)
+class GroupSerializer(serializers.ModelSerializer):    
+    class Meta:
+        model = Group
+        fields = ('name', 'permissions',)
+
+    def create(self, validated_data):
+        groups_data = validated_data.pop('permissions')
+        group = Group.objects.create(**validated_data)
+        for group_data in groups_data:
+            # Group.objects.create(user=user, **group_data)
+            group.permissions.add(group_data)
+        return group
+    
+class PermissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Permission
+        fields = ('permission',)
 
 
 class UserSerializers(serializers.ModelSerializer):
