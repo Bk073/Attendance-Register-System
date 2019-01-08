@@ -21,6 +21,9 @@ class Branch(models.Model):
     
     def get_absolute_url(self):
         return reverse("branch:detail", kwargs={"branchname": self.branch_name})
+   
+    def __str__(self):
+        return '%s' % (self.branch_name)
 
     # def get_absolute_url(self):
     #     return reverse("branch:detail", kwargs={"name": self.name})
@@ -54,7 +57,8 @@ class User(AbstractUser):
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.username})
 
-
+    def __str__(self):
+        return '%s %s' % (self.username, self.first_name)
 
 
 
