@@ -1,10 +1,10 @@
 from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import status
 from .serializers import MakeAttendanceSerializer, MakeLeaveRequestSerializer, UserDaySerializer
-from .permissions import AttendancePermissons
+from .permissions import AttendancePermissons, AcceptLeaveRequest
 from .models import Attendance, LeaveRequest, UserDays
 from rest_framework.authtoken.models import Token
 from django.dispatch import receiver
@@ -12,6 +12,7 @@ from django.db.models.signals import post_save
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.timezone import localdate, localtime, now
 from attendanceregistersystem.users.models  import User
+from rest_framework.response import Response
 
 
 
@@ -28,7 +29,7 @@ from attendanceregistersystem.users.models  import User
 #         return Response(serializer.error, status=status.HTTP_404_NOT_FOUND)
 
 class MakeAttendance(generics.ListCreateAPIView):
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticated,)
     serializer_class = MakeAttendanceSerializer
     # def perform_create(self, serializer_class):
     #     serializer_class.save(user= self.request.user)
@@ -58,6 +59,7 @@ class UserDays(generics.ListAPIView):
     serializer_class = UserDaySerializer
     queryset = UserDays.objects.all()
 
+
 class UserAttendance(generics.ListAPIView):
     permission_classes = (AllowAny,)
     serializer_class = MakeAttendanceSerializer
@@ -65,7 +67,7 @@ class UserAttendance(generics.ListAPIView):
 
 
 class MakeLeaveRequest(generics.CreateAPIView):
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticated,)
     serializer_class = MakeLeaveRequestSerializer
     # login_url = '../../users/v1/login/'
 
@@ -73,16 +75,19 @@ class MakeLeaveRequest(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         # self.perform_create(serializer)
-        serializer.save()
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        date = serializer.save()
+        print(date)
+        # headers = self.get_success_headers(serializer.data)
+        return Response({'ok':'ok'}, status=status.HTTP_201_CREATED)
+
 
 
 post_save.connect(receiver=UserDay.post, sender=LeaveRequest)
 
 
 class AcceptRequest(APIView):
-    
+    permission_classes = (AcceptLeaveRequest,)
+
     def post(self, request, *args, **kwargs):
         id = kwargs.get('id', 'Default Value if not there') # yo id user ko ho ki leave request model ko ?
         status = kwargs.get('status', 'Default Value if not there')
@@ -92,4 +97,8 @@ class AcceptRequest(APIView):
             leave_request.status = 'accept'
         else:
             leave_request.status = 'reject'
+
+    def get(self, request, format=None):
+        leave_request = LeaveRequest.objects.all()
+        return Response(leave_request)
 

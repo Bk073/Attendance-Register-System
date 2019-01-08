@@ -29,4 +29,9 @@ urlpatterns = [
         UserAttendance.as_view(),
         name='viewAttendance'
     ),
+    url(
+        r'v1/view-leaveRequest',
+        AcceptRequest.as_view(),
+        name='viewLeaveRequest'
+    ),
 ]

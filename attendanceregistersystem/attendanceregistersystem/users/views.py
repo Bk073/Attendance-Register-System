@@ -14,13 +14,15 @@ from rest_framework.authentication import TokenAuthentication
 from django.db.models.signals import post_save
 from django.utils.timezone import localdate, localtime, now
 from djoser.views import TokenDestroyView
+from .permissions import CreateNewStaff
 from djoser import utils
+
 
 # use generics. views
 # previously used ModelViewSet
 
 class UserCreateView(generics.CreateAPIView):
-    permission_classes = (AllowAny,)
+    permission_classes = (CreateNewStaff,)
     serializer_class = UserSerializers
     
     def create(self, request, *args, **kwargs):

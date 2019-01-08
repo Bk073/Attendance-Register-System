@@ -47,8 +47,8 @@ class User(AbstractUser):
             ("add_staff", "Can add staff"),
             ("accept_request", "Can accept leave request"),
             ("make_request", "can make leave request"),
-            ("set_roles_of_staff", "can set roles of staff"),
             ("view_attendance", "can veiw attendance"),
+            ("make_attendance", "can make attendance"),
         )
 
     def get_absolute_url(self):

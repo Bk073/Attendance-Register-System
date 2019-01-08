@@ -3,23 +3,14 @@ from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from attendanceregistersystem.users.models import User
 
-class AttendancePermissons(BasePermission):
 
-    def has_permission(self, request, view):
-        content_type = ContentType.objects.get_for_model(User)
-
-        if "can make attendance" in Permission.objects.filter(content_type):
-            return True
-        else:
-            return False
-
-class AcceptLeaveRequest(BasePermission):
+class CreateNewStaff(BasePermission):
 
     def has_permission(self, request, view):
         content_type = ContentType.objects.get_for_model(User)
         content_type = content_type.objects.groups.all()
 
-        if "Can accept leave request" in Permission.objects.filter(content_type):
+        if "Can add staff" in Permission.objects.filter(content_type):
             return True
         else:
             return False
