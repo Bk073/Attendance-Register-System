@@ -3,9 +3,9 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import status
-from .serializers import MakeAttendanceSerializer, MakeLeaveRequestSerializer, UserDaySerializer
+from .serializers import MakeAttendanceSerializer, MakeLeaveRequestSerializer, UserDaySerializer, TypesOfLeaveSerializer
 from .permissions import AttendancePermissons, AcceptLeaveRequest
-from .models import Attendance, LeaveRequest, UserDays
+from .models import Attendance, LeaveRequest, UserDays, TypesOfLeave
 from rest_framework.authtoken.models import Token
 from django.dispatch import receiver
 from django.db.models.signals import post_save
@@ -92,17 +92,26 @@ class MakeLeaveRequest(generics.CreateAPIView):
 class AcceptRequest(APIView):
     permission_classes = (AcceptLeaveRequest,)
 
-    def post(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         id = kwargs.get('id', 'Default Value if not there') # yo id user ko ho ki leave request model ko ?
-        status = kwargs.get('status', 'Default Value if not there')
-        leave_request = LeaveRequest.objects.get(pk=pk)
-        print(leave_request)
-        if status == accept :
-            leave_request.status = 'accept'
+        statu = kwargs.get('status', 'Default Value if not there')
+        leave_request = LeaveRequest.objects.get(leave_id=id)
+        if statu == 'accept' :
+            leave_request.status = 'Approved'
         else:
-            leave_request.status = 'reject'
+            leave_request.status = 'Rejected'
+            
+        print(leave_request.status)
+        leave_request.save()
+        
+        return Response({'ok':'ok'}, status=status.HTTP_201_CREATED)
 
-    def get(self, request, format=None):
-        leave_request = LeaveRequest.objects.all()
-        return Response(leave_request)
+    # def get(self, request, format=None):
+    #     leave_request = LeaveRequest.objects.all()
+    #     return Response(leave_request)
 
+
+class  TypesOfLeaveList(generics.ListCreateAPIView):
+    queryset = TypesOfLeave.objects.all()
+    serializer_class = TypesOfLeaveSerializer
+    permission_classes = (AllowAny,)
