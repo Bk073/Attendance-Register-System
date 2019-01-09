@@ -11,7 +11,9 @@ class CreateNewStaff(BasePermission):
         # content_type = content_type.groups
         user = User.objects.get(id = request.user.id)
         group = list(user.groups.all()) #changing queryset to list
-        if group[0].permissions.get(name='Can add staff'):
+        # if group[0].permissions.get(name='Can add staff'):
+        permison = list(group[0].permissions.all())
+        if permison.get(name='Can add staff'):
             return True
         else:
             return False
