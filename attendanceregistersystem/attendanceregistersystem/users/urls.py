@@ -11,6 +11,8 @@ from attendanceregistersystem.users.views import (
     user_logout_view,
     groups_create_view,
     permission_create_view,
+    branch_list_view,
+    groups_list_view,
 )
 
 
@@ -35,5 +37,7 @@ urlpatterns = [
     path("v1/logout/", view= user_logout_view, name="logout"),
     path("v1/groups", view = groups_create_view, name="create-group"),
     path("v1/permission", view = permission_create_view, name="create-permission"),
+    path("v1/branch", view =branch_list_view, name="branch_list"),
+    path("v1/groups", view=groups_list_view, name="groups_list"),
 
 ]  

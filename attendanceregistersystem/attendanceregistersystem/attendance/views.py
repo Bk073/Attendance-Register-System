@@ -11,7 +11,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.timezone import localdate, localtime, now
-from attendanceregistersystem.users.models  import User
+from attendanceregistersystem.users.models  import User, Branch
 from rest_framework.response import Response
 
 
@@ -105,4 +105,6 @@ class AcceptRequest(APIView):
     def get(self, request, format=None):
         leave_request = LeaveRequest.objects.all()
         return Response(leave_request)
+
+
 

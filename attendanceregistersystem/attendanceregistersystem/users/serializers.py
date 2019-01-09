@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User
+from .models import User, Branch
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import Group, Permission
 from rest_framework import exceptions
@@ -95,4 +95,11 @@ class UserLoginSerializers(serializers.Serializer):
         
         return data
 
+
+
+class BranchSerializers(serializers.ModelSerializer):
+
+    class Meta:
+        model = Branch
+        fields = ['branch_id', 'branch_name',]
 

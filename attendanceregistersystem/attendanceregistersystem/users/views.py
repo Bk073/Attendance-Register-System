@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.views.generic import DetailView, ListView, RedirectView, UpdateView
 from django.contrib.auth.views import LoginView
 from rest_framework import generics
-from .serializers import UserLoginSerializers, UserSerializers, GroupSerializer, PermissionSerializer
+from .serializers import UserLoginSerializers, UserSerializers, GroupSerializer, PermissionSerializer, BranchSerializers
 from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework.permissions import AllowAny, IsAuthenticated
 User = get_user_model()
@@ -16,7 +16,8 @@ from django.utils.timezone import localdate, localtime, now
 from djoser.views import TokenDestroyView
 from .permissions import CreateNewStaff
 from djoser import utils
-
+from .models import Branch
+from django.contrib.auth.models import Group, Permission
 
 # use generics. views
 # previously used ModelViewSet
@@ -209,3 +210,17 @@ class PermissionCreateView(generics.CreateAPIView):
 
 
 permission_create_view = PermissionCreateView.as_view()
+
+class BranchList(generics.ListCreateAPIView):
+    queryset = Branch.objects.all()
+    serializer_class = BranchSerializers
+
+
+branch_list_view = BranchList.as_view()
+
+class GroupList(generics.ListCreateAPIView):
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
+
+
+groups_list_view = GroupList.as_view()
