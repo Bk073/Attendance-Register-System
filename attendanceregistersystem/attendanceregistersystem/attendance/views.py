@@ -106,3 +106,6 @@ class AcceptRequest(APIView):
         leave_request = LeaveRequest.objects.all()
         return Response(leave_request)
 
+
+class  TypesOfLeaveList(generics.ListCreateAPIView):
+    
