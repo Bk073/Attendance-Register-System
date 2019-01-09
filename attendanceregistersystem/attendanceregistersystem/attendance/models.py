@@ -21,6 +21,9 @@ class TypesOfLeave(models.Model):
     class Meta:
         default_permissions = ()
     
+    def __str__(self):
+        return self.leave_type
+
 
 class LeaveRequest(models.Model):
     leave_id = models.AutoField(primary_key=True)

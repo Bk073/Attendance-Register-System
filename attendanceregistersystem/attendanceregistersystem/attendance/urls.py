@@ -2,7 +2,7 @@ from django.conf.urls import url
 from attendanceregistersystem.attendance.views import MakeAttendance, MakeLeaveRequest, UserDays, AcceptRequest, UserAttendance
 
 app_name = "attendance"
-
+    
 urlpatterns = [
     url(
         r'^v1/attendance',

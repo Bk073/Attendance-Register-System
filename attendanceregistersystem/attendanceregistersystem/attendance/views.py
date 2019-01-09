@@ -44,10 +44,10 @@ class MakeAttendance(generics.ListCreateAPIView):
 class UserDay(generics.CreateAPIView):
     permission_classes = (AllowAny,)
 
-    @receiver(post_save, sender=LeaveRequest)
+    # @receiver(post_save, sender=LeaveRequest)
     def post(self, request, *args, **kwargs):
-        leave = LeaveRequest.objects.get(user=request.user)
-        leave_type =  leave.types_of_leave
+        leave_reqs = LeaveRequest.objects.filter(user=request.user)
+        leave_type =  leave_req.types_of_leave
         days = leave.date_from - leave.date_to
         user_leave = UserDays.objects.get_or_create(user = request.user, leave_type=leave_type)
         user_leave.days_taken = TypesOfLeave.get(leave_type=leave_type).total_days - days
@@ -73,16 +73,20 @@ class MakeLeaveRequest(generics.CreateAPIView):
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        if serializer.is_valid():
         # self.perform_create(serializer)
-        date = serializer.save()
-        print(date)
+            date = serializer.save()
+            print(date)
         # headers = self.get_success_headers(serializer.data)
         return Response({'ok':'ok'}, status=status.HTTP_201_CREATED)
 
+    def post(self, request, *args, **kwargs):
+        print(request)
+        resp = self.create(request, *args, **kwargs)
+        print(resp)
+        return resp
 
-
-post_save.connect(receiver=UserDay.post, sender=LeaveRequest)
+# post_save.connect(receiver=UserDay.post, sender=LeaveRequest)
 
 
 class AcceptRequest(APIView):
