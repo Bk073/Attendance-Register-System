@@ -13,13 +13,17 @@ class AttendancePermissons(BasePermission):
         else:
             return False
 
+
 class AcceptLeaveRequest(BasePermission):
 
-    def has_permission(self, request, view):
+    def has_permission(self, request, view, *args, **kwargs):
+        leave_request_id = kwargs.get('id', 'Default Value if not there')
+        requested_user = leave_request_id.user
         user = User.objects.get(username = request.user.username)
         grp = list(user.groups.all())
         lis = grp[0].permissions.all()
-        if lis.get(name='Can accept leave request'):
+        branch = user.branch 
+        if lis.get(name='Can accept leave request') and  branch == requested_user.branch: # and branch == leaveRequest send garne user ko branch
             return True
         else:
             return False
