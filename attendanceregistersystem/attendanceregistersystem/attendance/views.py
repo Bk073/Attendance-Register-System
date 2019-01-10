@@ -111,12 +111,8 @@ class AcceptRequest(APIView):
     #     return Response(leave_request)
 
 
-<<<<<<< HEAD
-
-
-=======
 class  TypesOfLeaveList(generics.ListCreateAPIView):
     queryset = TypesOfLeave.objects.all()
     serializer_class = TypesOfLeaveSerializer
     permission_classes = (AllowAny,)
->>>>>>> leaveRequest
+
