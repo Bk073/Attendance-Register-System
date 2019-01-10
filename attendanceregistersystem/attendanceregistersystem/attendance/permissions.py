@@ -19,10 +19,6 @@ class AcceptLeaveRequest(BasePermission):
         user = User.objects.get(username = request.user.username)
         grp = list(user.groups.all())
         lis = grp[0].permissions.all()
-<<<<<<< HEAD
-=======
-
->>>>>>> stash
         if lis.get(name='Can accept leave request'):
             return True
         else:

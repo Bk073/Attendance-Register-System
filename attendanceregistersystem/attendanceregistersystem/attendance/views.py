@@ -3,7 +3,7 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import status
-from .serializers import MakeAttendanceSerializer, MakeLeaveRequestSerializer, UserDaySerializer, TypesOfLeaveSerializer
+from .serializers import MakeAttendanceSerializer, MakeLeaveRequestSerializer, UserDaySerializer, TypesOfLeaveSerializer, LeaveRequestSerializer
 from .permissions import AttendancePermissons, AcceptLeaveRequest
 from .models import Attendance, LeaveRequest, UserDays, TypesOfLeave
 from rest_framework.authtoken.models import Token
@@ -117,5 +117,9 @@ class  TypesOfLeaveList(generics.ListCreateAPIView):
     permission_classes = (AllowAny,)
 
 
-class  TypesOfLeaveList(generics.ListCreateAPIView):
+class LeaveRequestList(generics.ListAPIView):
+    queryset = LeaveRequest.objects.all()
+    serializer_class = LeaveRequestSerializer
+    permission_classes = (AllowAny,)
+
     
