@@ -116,3 +116,6 @@ class  TypesOfLeaveList(generics.ListCreateAPIView):
     serializer_class = TypesOfLeaveSerializer
     permission_classes = (AllowAny,)
 
+
+class  TypesOfLeaveList(generics.ListCreateAPIView):
+    

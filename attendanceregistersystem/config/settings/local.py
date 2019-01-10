@@ -12,11 +12,15 @@ ALLOWED_HOSTS = [
     "localhost",
     "0.0.0.0",
     "127.0.0.1",
+<<<<<<< HEAD
 <<<<<<< Updated upstream
     "f7565fd7.ngrok.io",
 =======
     "c1d36527.ngrok.io",
 >>>>>>> Stashed changes
+=======
+    "c1d36527.ngrok.io",
+>>>>>>> stash
 ]
 
 # CACHES
