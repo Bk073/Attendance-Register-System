@@ -16,10 +16,10 @@ class AttendancePermissons(BasePermission):
 class AcceptLeaveRequest(BasePermission):
 
     def has_permission(self, request, view):
-        content_type = ContentType.objects.get_for_model(User)
-        content_type = content_type.objects.groups.all()
-
-        if "Can accept leave request" in Permission.objects.filter(content_type):
+        user = User.objects.get(username = request.user.username)
+        grp = list(user.groups.all())
+        lis = grp[0].permissions.all()
+        if lis.get(name='Can accept leave request'):
             return True
         else:
             return False
