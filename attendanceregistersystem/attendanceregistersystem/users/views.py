@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.views.generic import DetailView, ListView, RedirectView, UpdateView
 from django.contrib.auth.views import LoginView
 from rest_framework import generics
-from .serializers import UserLoginSerializers, UserSerializers, GroupSerializer, PermissionSerializer, BranchSerializers
+from .serializers import UserLoginSerializers, UserSerializers, UserSerializersDefault, GroupSerializer, PermissionSerializer, BranchSerializers
 from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework.permissions import AllowAny, IsAuthenticated
 User = get_user_model()
@@ -24,15 +24,21 @@ from django.contrib.auth.models import Group, Permission
 
 class UserCreateView(generics.CreateAPIView):
     permission_classes = (CreateNewStaff,)
-    serializer_class = UserSerializers
+    # serializer_class = UserSerializers
     
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data = request.data)
+        serializer = self.get_serializer_class(data = request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
 
+    def get_serializer_class(self):
+        user = User.objects.get(username = self.request.user.username)
+        if user.groups == 'Operational Manager':
+            return UserSerializers
+        else:
+            return UserSerializersDefault
 
 user_create_view = UserCreateView.as_view()
 

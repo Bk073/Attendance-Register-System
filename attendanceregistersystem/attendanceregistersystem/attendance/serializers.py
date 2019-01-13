@@ -31,6 +31,7 @@ class MakeLeaveRequestSerializer(serializers.ModelSerializer):
         req.date_from = validated_data['date_from']       
         req.description = validated_data['description']
         req.types_of_leave = validated_data['types_of_leave']  
+        print(req.types_of_leave)
         leave = req.save()
         return req                 
     # def save(self, **kwargs):

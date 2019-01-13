@@ -39,5 +39,4 @@ urlpatterns = [
     path("v1/permission", view = permission_create_view, name="create-permission"),
     path("v1/branch", view =branch_list_view, name="branch_list"),
     path("v1/groups", view=groups_list_view, name="groups_list"),
-
 ]  
