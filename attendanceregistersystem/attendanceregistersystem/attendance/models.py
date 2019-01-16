@@ -12,8 +12,8 @@ class Attendance(models.Model):
     class Meta:
         default_permissions = ()
     
-    def __str__(self):
-        return self.user
+    # def __str__(self):
+    #     return self.
 
 
 class TypesOfLeave(models.Model):

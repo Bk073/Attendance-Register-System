@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import status
 from .serializers import MakeAttendanceSerializer, MakeLeaveRequestSerializer, UserDaySerializer, TypesOfLeaveSerializer, LeaveRequestSerializer
-from .permissions import AttendancePermissons, AcceptLeaveRequest
+from .permissions import AttendancePermissons, AcceptLeaveRequest, ViewUserAttendance
 from .models import Attendance, LeaveRequest, UserDays, TypesOfLeave
 from rest_framework.authtoken.models import Token
 from django.dispatch import receiver
@@ -63,6 +63,13 @@ class UserDays(generics.ListAPIView):
 class UserAttendance(generics.ListAPIView):
     permission_classes = (AllowAny,)
     serializer_class = MakeAttendanceSerializer
+    queryset = Attendance.objects.all()
+
+
+class UsernameAttendance(generics.RetrieveAPIView):
+    permission_classes = (ViewUserAttendance,)
+    serializer_class = MakeAttendanceSerializer
+    lookup_field = 'username'
     queryset = Attendance.objects.all()
 
 

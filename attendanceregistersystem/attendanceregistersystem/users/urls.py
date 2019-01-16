@@ -20,7 +20,7 @@ app_name = "users"
 urlpatterns = [
     # path("", view=user_list_view, name="list"),
     path("~redirect/", view=user_redirect_view, name="redirect"),
-    path("~update/", view=user_update_view, name="update"),
+    path("update/<str:username>", view=user_update_view, name="update"),
     path("<str:username>/", view=user_detail_view, name="detail"),
     url(
         r'^v1/login/$',
@@ -38,5 +38,5 @@ urlpatterns = [
     path("v1/groups", view = groups_create_view, name="create-group"),
     path("v1/permission", view = permission_create_view, name="create-permission"),
     path("v1/branch", view =branch_list_view, name="branch_list"),
-    path("v1/groups", view=groups_list_view, name="groups_list"),
+    path("v1/groupsList", view=groups_list_view, name="groups_list"),
 ]  

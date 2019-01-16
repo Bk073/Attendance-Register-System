@@ -14,6 +14,7 @@ decorator==4.3.0
 defusedxml==0.5.0
 Django==2.0.9
 django-allauth==0.38.0
+django-cors-headers==2.4.0
 django-coverage-plugin==1.6.0
 django-crispy-forms==1.7.2
 django-debug-toolbar==1.10.1
@@ -23,9 +24,12 @@ django-extensions==2.1.4
 django-model-utils==3.1.2
 django-phonenumber-field==2.1.0
 django-redis==4.10.0
+django-rest-auth==0.9.3
 django-rest-framework-roles==0.5
 django-role-permissions==2.2.1
+django-templated-mail==1.1.1
 djangorestframework==3.9.0
+djoser==1.4.0
 docutils==0.14
 factory-boy==2.11.1
 Faker==1.0.0

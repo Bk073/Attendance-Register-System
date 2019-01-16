@@ -27,3 +27,19 @@ class AcceptLeaveRequest(BasePermission):
             return True
         else:
             return False
+
+
+class ViewUserAttendance(BasePermission):
+    def has_permission(self, request, view, *args, **kwargs):
+        username = kwargs.get('username', 'Default Value if not there')
+        requested_user = request.user.username
+        user = User.objects.get(id = request.user.id)
+        group = list(user.groups.all())
+        permison = group[0].permissions.all()
+    
+        if username == requested_user:
+            return True
+        elif  permison.get(name='can view attendance'):
+            return True
+        else:
+            return False

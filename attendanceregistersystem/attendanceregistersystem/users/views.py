@@ -3,7 +3,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.views.generic import DetailView, ListView, RedirectView, UpdateView
 from django.contrib.auth.views import LoginView
-from rest_framework import generics
 from .serializers import UserLoginSerializers, UserSerializers, UserSerializersDefault, GroupSerializer, PermissionSerializer, BranchSerializers
 from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -14,10 +13,11 @@ from rest_framework.authentication import TokenAuthentication
 from django.db.models.signals import post_save
 from django.utils.timezone import localdate, localtime, now
 from djoser.views import TokenDestroyView
-from .permissions import CreateNewStaff
+from .permissions import CreateNewStaff, ViewUser, UpdateUser
 from djoser import utils
 from .models import Branch
 from django.contrib.auth.models import Group, Permission
+from rest_framework import generics
 
 # use generics. views
 # previously used ModelViewSet
@@ -44,7 +44,7 @@ user_create_view = UserCreateView.as_view()
 
 
 class UserListView(generics.ListAPIView):
-    permission_classes= (AllowAny,)
+    permission_classes= (ViewUser,)
     serializer_class = UserSerializers
     
     def get(self, request, *args, **kwargs):
@@ -58,12 +58,15 @@ class UserListView(generics.ListAPIView):
 user_list_view = UserListView.as_view()
 
 
-class UserDetailView(LoginRequiredMixin, DetailView):
+class UserDetailView(generics.RetrieveAPIView):
 
-    model = User
-    slug_field = "username"
-    slug_url_kwarg = "username"
-
+    # model = User
+    # slug_field = "username"
+    # slug_url_kwarg = "username"
+    lookup_field = 'username'
+    permission_class = (ViewUser,) 
+    queryset = User.objects.all()
+    serializer_class = UserSerializers
 
 user_detail_view = UserDetailView.as_view()
 
@@ -79,17 +82,13 @@ user_detail_view = UserDetailView.as_view()
 # user_list_view = UserListView.as_view()
 
 
-class UserUpdateView(LoginRequiredMixin, UpdateView):
+class UserUpdateView(generics.UpdateAPIView):
+    serializer_class = UserSerializers
+    permission_classes = (AllowAny, )
+    lookup_field = 'username'
 
-    model = User
-    fields = ["name"]
-
-    def get_success_url(self):
-        return reverse("users:detail", kwargs={"username": self.request.user.username})
-
-    def get_object(self):
-        return User.objects.get(username=self.request.user.username)
-
+    def get_queryset(self):
+        return User.objects.get(id = self.request.id)
 
 user_update_view = UserUpdateView.as_view()
 
@@ -224,9 +223,11 @@ class BranchList(generics.ListCreateAPIView):
 
 branch_list_view = BranchList.as_view()
 
-class GroupList(generics.ListCreateAPIView):
-    queryset = Group.objects.all()
+    
+class GroupList(generics.ListAPIView):
+    permission_classes = (AllowAny,)
     serializer_class = GroupSerializer
+    queryset = Group.objects.all()
 
 
 groups_list_view = GroupList.as_view()

@@ -17,3 +17,23 @@ class CreateNewStaff(BasePermission):
             return True
         else:
             return False
+
+class ViewUser(BasePermission):
+
+    def has_permission(self, request, view):
+        user = User.objects.get(id = request.user.id)
+        group = list(user.groups.all())
+        permison = group[0].permissions.all()
+        if permison.get(name='can view user'):
+            return True
+        else:
+            return False
+
+class UpdateUser(BasePermission):
+    def has_permission(self, request, view, **kwargs):
+        username = kwargs.get('username', 'Default Value if not there')
+        requested_user = request.user.username
+        if username == requested_user:
+            return True
+        else:
+            return False
