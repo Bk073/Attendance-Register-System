@@ -13,35 +13,39 @@ from rest_framework.authentication import TokenAuthentication
 from django.db.models.signals import post_save
 from django.utils.timezone import localdate, localtime, now
 from djoser.views import TokenDestroyView
-from .permissions import CreateNewStaff, ViewUser, UpdateUser
+from .permissions import CreateNewStaff, ViewUser
 from djoser import utils
 from .models import Branch
 from django.contrib.auth.models import Group, Permission
 from rest_framework import generics
+from rest_framework.views import APIView
 
 # use generics. views
 # previously used ModelViewSet
 
+# class UserCreateView(generics.CreateAPIView):
+#     permission_classes = (CreateNewStaff,)
+#     # serializer_class = UserSerializers
+    
+#     def create(self, request, *args, **kwargs):
+#         serializer = self.get_serializer_class(data = request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data, status=status.HTTP_200_OK)
+#         return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
+
+#     def get_serializer_class(self):
+#         user = User.objects.get(username = self.request.user.username)
+#         if user.groups == 'Operational Manager':
+#             return UserSerializers
+#         else:
+#             return UserSerializersDefault
+
 class UserCreateView(generics.CreateAPIView):
     permission_classes = (CreateNewStaff,)
-    # serializer_class = UserSerializers
-    
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer_class(data = request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_404_NOT_FOUND)
-
-    def get_serializer_class(self):
-        user = User.objects.get(username = self.request.user.username)
-        if user.groups == 'Operational Manager':
-            return UserSerializers
-        else:
-            return UserSerializersDefault
+    serializer_class = UserSerializers
 
 user_create_view = UserCreateView.as_view()
-
 
 class UserListView(generics.ListAPIView):
     permission_classes= (ViewUser,)
@@ -82,13 +86,24 @@ user_detail_view = UserDetailView.as_view()
 # user_list_view = UserListView.as_view()
 
 
-class UserUpdateView(generics.UpdateAPIView):
-    serializer_class = UserSerializers
-    permission_classes = (AllowAny, )
+class UserUpdateView(APIView):
+    # serializer_class = UserSerializers
+    permission_classes = (IsAuthenticated, )
     lookup_field = 'username'
 
-    def get_queryset(self):
-        return User.objects.get(id = self.request.id)
+    def get_object(self, username):
+        try:
+            return User.objects.get(username=username)
+        except User.DoesNotExist:
+            raise Http404
+
+    def put(self, request, username, format=None):
+        user = self.get_object(username)
+        serializer = UserSerializers(user, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 user_update_view = UserUpdateView.as_view()
 
@@ -216,7 +231,7 @@ class PermissionCreateView(generics.CreateAPIView):
 
 permission_create_view = PermissionCreateView.as_view()
 
-class BranchList(generics.ListCreateAPIView):
+class BranchList(generics.ListAPIView):
     queryset = Branch.objects.all()
     serializer_class = BranchSerializers
 

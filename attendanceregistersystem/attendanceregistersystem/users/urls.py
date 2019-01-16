@@ -1,6 +1,7 @@
 from django.urls import path
 from django.conf.urls import url
 
+
 from attendanceregistersystem.users.views import (
     user_list_view,
     user_redirect_view,
@@ -20,7 +21,11 @@ app_name = "users"
 urlpatterns = [
     # path("", view=user_list_view, name="list"),
     path("~redirect/", view=user_redirect_view, name="redirect"),
-    path("update/<str:username>", view=user_update_view, name="update"),
+    path("update/<str:username>", view=user_update_view, name="update"), #username required
+    # url(
+    #     r'update/(?P<username>\d+)',
+    #     view=user_update_view, name="update"
+    # ),
     path("<str:username>/", view=user_detail_view, name="detail"),
     url(
         r'^v1/login/$',

@@ -32,13 +32,13 @@ class UserSerializers(serializers.ModelSerializer):
         fields = ('username', 'password','first_name', 'last_name','address','contact', 'email', 'date_of_birth', 'branch', 'groups')
 
     def create(self, validated_data):
-        groups_data = validated_data.pop('groups')
+        # groups_data = validated_data.pop('groups')
         user = User.objects.create(**validated_data)
         user.password =make_password(validated_data.pop('password'))
         user.save()
-        for group_data in groups_data:
-            # Group.objects.create(user=user, **group_data)
-            user.groups.add(group_data)
+        # for group_data in groups_data:
+        #     # Group.objects.create(user=user, **group_data)
+        #     user.groups.add(group_data)
         return user
 
 

@@ -29,11 +29,12 @@ class ViewUser(BasePermission):
         else:
             return False
 
-class UpdateUser(BasePermission):
-    def has_permission(self, request, view, **kwargs):
-        username = kwargs.get('username', 'Default Value if not there')
-        requested_user = request.user.username
-        if username == requested_user:
-            return True
-        else:
-            return False
+# class UpdateUser(BasePermission):
+#     def has_permission(self, request, view, **kwargs):
+#         username = kwargs.get('username', 'Default Value if not there')
+#         print(username)
+#         requested_user = request.user.username
+#         # if username == requested_user:
+#         return True
+#         # else:
+#             # return False
