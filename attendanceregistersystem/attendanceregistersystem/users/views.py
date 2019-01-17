@@ -19,6 +19,9 @@ from .models import Branch
 from django.contrib.auth.models import Group, Permission
 from rest_framework import generics
 from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.generics import GenericAPIView
+from rest_framework.mixins import UpdateModelMixin
 
 # use generics. views
 # previously used ModelViewSet
@@ -86,27 +89,39 @@ user_detail_view = UserDetailView.as_view()
 # user_list_view = UserListView.as_view()
 
 
-class UserUpdateView(APIView):
-    # serializer_class = UserSerializers
-    permission_classes = (IsAuthenticated, )
-    lookup_field = 'username'
+# class UserUpdateView(APIView):
+#     # serializer_class = UserSerializers
+#     permission_classes = (IsAuthenticated, )
+#     lookup_field = 'username'
 
-    def get_object(self, username):
-        try:
-            return User.objects.get(username=username)
-        except User.DoesNotExist:
-            raise Http404
+#     def get_object(self, username):
+#         try:
+#             return User.objects.get(username=username)
+#         except User.DoesNotExist:
+#             raise Http404
 
-    def put(self, request, username, format=None):
-        user = self.get_object(username)
-        serializer = UserSerializers(user, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+#     def put(self, request, username, format=None):
+#         user = self.get_object(username)
+#         serializer = UserSerializers(user, data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response(serializer.data)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class UserUpdateView(GenericAPIView, UpdateModelMixin):
+    serializer_class = UserSerializers  
+    permission_classes = (IsAuthenticated, )  
+    queryset = User.objects.all()
+    # lookup_field = 'username'
+
+    # def partial_update(self, request, pk=None):
+    #     serialized = UserSerializers(request.user, data=request.data, partial=True)
+    #     return Response(status=status.HTTP_202_ACCEPTED)
+    def put(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+# user_update_view = UserUpdateView.as_view({'get': 'retrieve', 'patch':'partial_update'})
 user_update_view = UserUpdateView.as_view()
-
 
 class UserRedirectView(LoginRequiredMixin, RedirectView):
 

@@ -40,6 +40,14 @@ class UserSerializers(serializers.ModelSerializer):
         #     # Group.objects.create(user=user, **group_data)
         #     user.groups.add(group_data)
         return user
+    
+    def update(self, instance, validated_data):
+        user = User.objects.get(pk=instance.id)
+        validated_data['password'] =make_password(validated_data.pop('password'))
+        User.objects.filter(pk=instance.id)\
+                            .update(**validated_data)
+        # user.update(**validated_data)
+        return user
 
 
 class UserSerializersDefault(serializers.Serializer):
@@ -58,6 +66,13 @@ class UserSerializersDefault(serializers.Serializer):
         #     user.groups.add(group_data)
         user.groups.add(admin.groups)
         return user
+
+    def update(self, instance, validated_data):
+        user = User.objects.get(pk=instance.id)
+        User.objects.filter(pk=instance.id)\
+                           .update(**validated_data)
+        return user
+
 
     
 # class UserSerializers(serializers.ModelSerializer):
