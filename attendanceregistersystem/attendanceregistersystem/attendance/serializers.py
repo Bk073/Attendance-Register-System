@@ -2,12 +2,14 @@ from rest_framework import serializers
 from attendanceregistersystem.attendance.models import Attendance, LeaveRequest, UserDays, TypesOfLeave
 from attendanceregistersystem.users.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from attendanceregistersystem.users.serializers import UserSerializers
 
 class MakeAttendanceSerializer(serializers.ModelSerializer):
 
     # user = serializers.PrimaryKeyRelatedField(
     #     many=True, queryset=User.objects.all())
     #  user = serializers.ReadOnlyField()
+    user = UserSerializers()
     class Meta:
         model = Attendance
         fields  = ('check_in', 'check_in_date', 'check_out', 'user',)
@@ -20,7 +22,7 @@ class MakeLeaveRequestSerializer(serializers.ModelSerializer):
     # types_of_leave = serializers.IntegerField()
     class Meta:
         model = LeaveRequest
-        fields = ('date_to', 'date_from', 'description', 'types_of_leave',)
+        fields = ( 'date_to', 'date_from', 'description', 'types_of_leave',)
 
     def create(self, validated_data):
         user = self.context['request'].user # in view self.request and in serializer self.context 
@@ -47,10 +49,10 @@ class MakeLeaveRequestSerializer(serializers.ModelSerializer):
     #     return value
 
 class LeaveRequestSerializer(serializers.ModelSerializer):
-
+    user = UserSerializers()
     class Meta:
         model = LeaveRequest
-        fields = ('date_to', 'date_from', 'description', 'types_of_leave', 'status', 'date_submission', 'user')
+        fields = ('leave_id','date_to', 'date_from', 'description', 'types_of_leave', 'status', 'date_submission', 'user')
 
 
 class UserDaySerializer(serializers.ModelSerializer):

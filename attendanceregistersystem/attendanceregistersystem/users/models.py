@@ -1,16 +1,22 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+
 from django.db.models import CharField, IntegerField, EmailField, DateField, AutoField, ForeignKey, CASCADE
-from phonenumber_field.modelfields import PhoneNumberField
+# from phonenumber_field.modelfields import PhoneNumberField
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
+from django import forms
+from rest_framework import serializers
+from django.core.validators import RegexValidator
 
-def validate_number(contact):
-    if contact != 13:
-        raise ValidationError(
-            f'{contact} not correct format'
-        )
+reg = RegexValidator(
+            regex=r'^\+?1?\d{9,15}$',
+            message="Phone number must be entered in the format '+123456789'. Up to 15 digits allowed."
+            )
+# def validate_number(contact):
+#     if contact == r'^\+?1?\d{9,15}$'
+#         raise serializers.ValidationError('Contact must less than be 13 digit')
 
 class Branch(models.Model):
     branch_id = models.AutoField(primary_key=True)
@@ -38,9 +44,16 @@ class User(AbstractUser):
     address = CharField(blank=True, max_length=255)
     # password = CharField(max_length=50)
     # contact = PhoneNumberField( max_length=13, help_text="Enter phone number with country code", null=True, blank=True)
-    #phone_number = forms.RegexField(regex=r'^\+?1?\d{9,15}$', 
-    #                            error_message = ("Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."))
-    contact = IntegerField(max_length=13, help_text="Enter phone number with country code", null=True,  blank=True)
+    # contact = forms.RegexField(regex=r'^\+?1?\d{9,15}$')
+    # contact = CharField(max_length=15, null=True,  blank=True)
+    contact = CharField(
+        max_length=16,
+        blank=True,
+        null=True,
+        validators=[
+            reg
+            ]
+    )
     email = EmailField(blank=True, null=True, verbose_name="Email")
     date_of_birth = DateField(blank=True, null=True)
     branch = ForeignKey(Branch, on_delete=CASCADE, null=True)

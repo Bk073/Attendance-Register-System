@@ -4,6 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 from attendanceregistersystem.users.models import User
 
 
+
 class CreateNewStaff(BasePermission):
 
     def has_permission(self, request, view):
@@ -29,12 +30,26 @@ class ViewUser(BasePermission):
         else:
             return False
 
-# class UpdateUser(BasePermission):
-#     def has_permission(self, request, view, **kwargs):
-#         username = kwargs.get('username', 'Default Value if not there')
-#         print(username)
-#         requested_user = request.user.username
-#         # if username == requested_user:
-#         return True
-#         # else:
-#             # return False
+class UpdateUserGroup(BasePermission):
+    def has_permission(self, request, view, **kwargs):
+        # username = kwargs.get('username', 'Default Value if not there')
+        user = User.objects.get(id=request.user.id)
+
+        group = list(user.groups.all())
+        permison = group[0].permissions.all()
+        if permison.get(name='can update users group'):
+            return True
+        else:
+            return False
+
+
+class DeleteUser(BasePermission):
+    def has_permission(self, request, view, **kwargs):
+        user = User.objects.get(id=request.user.id)
+
+        group = list(user.groups.all())
+        permison = group[0].permissions.all()
+        if permison.get(name='can delete user'):
+            return True
+        else:
+            return False

@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.views.generic import DetailView, ListView, RedirectView, UpdateView
 from django.contrib.auth.views import LoginView
-from .serializers import UserLoginSerializers, UserSerializers, UserSerializersDefault, GroupSerializer, PermissionSerializer, BranchSerializers
+from .serializers import UserLoginSerializers, UserSerializers, UserSerializersDefault, GroupSerializer, PermissionSerializer, BranchSerializers, UserSerializer, UserUpdateSerializer
 from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework.permissions import AllowAny, IsAuthenticated
 User = get_user_model()
@@ -13,7 +13,7 @@ from rest_framework.authentication import TokenAuthentication
 from django.db.models.signals import post_save
 from django.utils.timezone import localdate, localtime, now
 from djoser.views import TokenDestroyView
-from .permissions import CreateNewStaff, ViewUser
+from .permissions import CreateNewStaff, ViewUser, UpdateUserGroup, DeleteUser
 from djoser import utils
 from .models import Branch
 from django.contrib.auth.models import Group, Permission
@@ -46,20 +46,32 @@ from rest_framework.mixins import UpdateModelMixin
 
 class UserCreateView(generics.CreateAPIView):
     permission_classes = (CreateNewStaff,)
+    # permission_classes = (AllowAny,)
     serializer_class = UserSerializers
 
 user_create_view = UserCreateView.as_view()
 
 class UserListView(generics.ListAPIView):
     permission_classes= (ViewUser,)
+    # permission_classes= (IsAuthenticated,)
     serializer_class = UserSerializers
-    
-    def get(self, request, *args, **kwargs):
-        return self.list(request, *args, **kwargs)
+    # queryset = User.objects.all()
+    # def get(self, request, *args, **kwargs):
+    #     return self.list(request, *args, **kwargs)
 
     def get_queryset(self):
         user = self.request.user
-        return user.groups.all()
+        group = list(user.groups.all())
+        print(group[0])
+        om = Group.objects.get(name='Operational Manager')
+        if om in group:
+            queryset= User.objects.all()
+            print("hello")
+            return queryset
+        else:
+            queryset= User.objects.filter(branch=user.branch)
+            return queryset
+        
 
 
 user_list_view = UserListView.as_view()
@@ -73,7 +85,7 @@ class UserDetailView(generics.RetrieveAPIView):
     lookup_field = 'username'
     permission_class = (ViewUser,) 
     queryset = User.objects.all()
-    serializer_class = UserSerializers
+    serializer_class = UserSerializer
 
 user_detail_view = UserDetailView.as_view()
 
@@ -122,6 +134,23 @@ class UserUpdateView(GenericAPIView, UpdateModelMixin):
 
 # user_update_view = UserUpdateView.as_view({'get': 'retrieve', 'patch':'partial_update'})
 user_update_view = UserUpdateView.as_view()
+
+
+class UserGroupUpdateView(GenericAPIView, UpdateModelMixin):
+    serializer_class = UserUpdateSerializer  
+    permission_classes = (UpdateUserGroup, )  
+    queryset = User.objects.all()
+    # lookup_field = 'username'
+
+    # def partial_update(self, request, pk=None):
+    #     serialized = UserSerializers(request.user, data=request.data, partial=True)
+    #     return Response(status=status.HTTP_202_ACCEPTED)
+    def put(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
+# user_update_view = UserUpdateView.as_view({'get': 'retrieve', 'patch':'partial_update'})
+user_group_update_view = UserUpdateView.as_view()
+
 
 class UserRedirectView(LoginRequiredMixin, RedirectView):
 
@@ -261,3 +290,24 @@ class GroupList(generics.ListAPIView):
 
 
 groups_list_view = GroupList.as_view()
+
+
+class UserDeleteView(generics.DestroyAPIView):
+    serializer_class = UserSerializers
+    permission_classes = (DeleteUser,)
+    # lookup_url_kwarg = "id"
+    queryset = User.objects.all()
+
+
+    # def get_object(self):
+    #     # id = kwargs.get('id', 'Default Value if not there') # yo id user ko ho ki leave request model ko ?
+        
+    #     id=self.kwargs.get(self.lookup_url_kwarg)
+    #     user = User.objects.get(id=id)
+    #     print(user)
+    #     queryset = LeaveRequest.objects.get(user=user)
+    #     print(queryset)
+    #     return queryset
+
+
+user_delete_view = UserDeleteView.as_view()

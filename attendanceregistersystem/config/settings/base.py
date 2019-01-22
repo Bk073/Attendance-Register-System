@@ -225,7 +225,7 @@ X_FRAME_OPTIONS = 'DENY'
 # EMAIL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
-EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
+# EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
 
 # ADMIN
 # ------------------------------------------------------------------------------
@@ -265,10 +265,23 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated', )
 }
 
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'karkeebishwa1@gmail.com'
+EMAIL_HOST_PASSWORD = 'butt3rfly98'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
 DJOSER = {
-    'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
+    'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
     'ACTIVATION_URL': '#/activate/{uid}/{token}',
     'SEND_ACTIVATION_EMAIL': True,
     'SERIALIZERS': {},
+    'PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND': True,
 }
+
+
+
+
 CORS_ORIGIN_ALLOW_ALL = True
+

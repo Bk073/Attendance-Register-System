@@ -7,7 +7,7 @@ from .base import env
 SECRET_KEY = env('DJANGO_SECRET_KEY')
 # https://docs.djangoproject.com/en/dev/ref/settings/#allowed-hosts
 
-ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['79bc859e.ngrok.io'])
+ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=['86b6acec.ngrok.io'])
 
 
 # DATABASES
@@ -116,7 +116,7 @@ TEMPLATES[0]['OPTIONS']['loaders'] = [  # noqa F405
 # https://docs.djangoproject.com/en/dev/ref/settings/#default-from-email
 DEFAULT_FROM_EMAIL = env(
     'DJANGO_DEFAULT_FROM_EMAIL',
-    default='attendanceRegisterSystem <noreply@example.com>'
+    default='attendanceRegisterSystem <noreply@http://127.0.0.1:8000/>'
 )
 # https://docs.djangoproject.com/en/dev/ref/settings/#server-email
 SERVER_EMAIL = env('DJANGO_SERVER_EMAIL', default=DEFAULT_FROM_EMAIL)

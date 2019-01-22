@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import status
 from .serializers import MakeAttendanceSerializer, MakeLeaveRequestSerializer, UserDaySerializer, TypesOfLeaveSerializer, LeaveRequestSerializer
-from .permissions import AttendancePermissons, AcceptLeaveRequest, ViewUserAttendance
+from .permissions import AttendancePermissons, AcceptLeaveRequest, ViewAttendance, ViewUserLeaveRequest, CanAddLeaveType, ViewUserAttendance, ViewLeaveRequest
 from .models import Attendance, LeaveRequest, UserDays, TypesOfLeave
 from rest_framework.authtoken.models import Token
 from django.dispatch import receiver
@@ -13,6 +13,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.timezone import localdate, localtime, now
 from attendanceregistersystem.users.models  import User, Branch
 from rest_framework.response import Response
+from django.contrib.auth.models import Group, Permission
 
 
 
@@ -61,16 +62,31 @@ class UserDays(generics.ListAPIView):
 
 
 class UserAttendance(generics.ListAPIView):
-    permission_classes = (AllowAny,)
+    permission_classes = (ViewAttendance,)
     serializer_class = MakeAttendanceSerializer
-    queryset = Attendance.objects.all()
+    # queryset = Attendance.objects.all()
+
+    def get_queryset(self):
+        user = self.request.user
+        group = list(user.groups.all())
+        om = Group.objects.get(name='Operational Manager')
+        if om in group:
+            queryset= Attendance.objects.all()
+            return queryset
+        else:
+            queryset= Attendance.objects.filter(user__branch=user.branch)
+            return queryset
 
 
-class UsernameAttendance(generics.RetrieveAPIView):
-    permission_classes = (ViewUserAttendance,)
-    serializer_class = MakeAttendanceSerializer
-    lookup_field = 'username'
-    queryset = Attendance.objects.all()
+# class UsernameAttendance(generics.RetrieveAPIView):
+#     permission_classes = (ViewUserAttendance,)
+#     # permission_classes = (AllowAny,)
+#     serializer_class = MakeAttendanceSerializer
+#     lookup_field='id'
+#     print(lookup_field)
+#     queryset = Attendance.objects.all()
+
+
 
 
 class MakeLeaveRequest(generics.CreateAPIView):
@@ -98,18 +114,21 @@ class MakeLeaveRequest(generics.CreateAPIView):
 
 class AcceptRequest(APIView):
     permission_classes = (AcceptLeaveRequest,)
+    # permission_classes = (IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
         id = kwargs.get('id', 'Default Value if not there') # yo id user ko ho ki leave request model ko ?
         statu = kwargs.get('status', 'Default Value if not there')
         leave_request = LeaveRequest.objects.get(leave_id=id)
         if statu == 'accept' :
-            leave_request.status = 'Approved'
-        else:
-            leave_request.status = 'Rejected'
+            leave_request.status = 'approved'
+            leave_request.save()
+        elif statu == 'reject':
+            leave_request.status = 'rejected'
+            leave_request.save()
             
         print(leave_request.status)
-        leave_request.save()
+        
         
         return Response({'ok':'ok'}, status=status.HTTP_201_CREATED)
 
@@ -121,12 +140,58 @@ class AcceptRequest(APIView):
 class  TypesOfLeaveList(generics.ListCreateAPIView):
     queryset = TypesOfLeave.objects.all()
     serializer_class = TypesOfLeaveSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (CanAddLeaveType, )
 
 
 class LeaveRequestList(generics.ListAPIView):
-    queryset = LeaveRequest.objects.all()
+    # queryset = LeaveRequest.objects.all()
     serializer_class = LeaveRequestSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (ViewLeaveRequest,)
+
+    def get_queryset(self):
+        user = self.request.user
+        group = list(user.groups.all())
+        om = Group.objects.get(name='Operational Manager')
+        print(group[0])
+        if om in group:
+            queryset= LeaveRequest.objects.all()
+            print("hello")
+            return queryset
+        else:
+            queryset= LeaveRequest.objects.filter(user__branch=user.branch)
+            return queryset
 
     
+class UserLeaveRequest(generics.ListAPIView):
+    serializer_class = LeaveRequestSerializer
+    permission_classes = (ViewUserLeaveRequest,)
+    lookup_url_kwarg = "id"
+    # permission_classes= (IsAuthenticated,)
+    
+    # def get_object(self):
+    # #     # id = kwargs.get('id', 'Default Value if not there') # yo id user ko ho ki leave request model ko ?
+        
+    # #     id=self.kwargs.get(self.lookup_url_kwarg)
+    # #     user = User.objects.get(id=id)
+    # #     print(user)
+    # #     queryset = LeaveRequest.objects.filter(user__id=id)
+    # #     print(queryset)
+    #     return self.get_queryset
+
+    def get_queryset(self):
+        id=self.kwargs.get(self.lookup_url_kwarg)
+        print(id)
+        queryset = LeaveRequest.objects.filter(user__id=id)
+        print(queryset)
+        return queryset
+
+    
+class UsernameAttendance(generics.ListAPIView):
+    permission_classes = (ViewUserAttendance,)
+    serializer_class = MakeAttendanceSerializer
+    lookup_url_kwarg = "id"
+    
+    def get_queryset(self):
+        id=self.kwargs.get(self.lookup_url_kwarg)
+        queryset = Attendance.objects.filter(user__id=id)
+        return queryset
