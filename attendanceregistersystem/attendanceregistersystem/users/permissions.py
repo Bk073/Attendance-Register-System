@@ -22,13 +22,22 @@ class CreateNewStaff(BasePermission):
 class ViewUser(BasePermission):
 
     def has_permission(self, request, view):
-        user = User.objects.get(id = request.user.id)
-        group = list(user.groups.all())
-        permison = group[0].permissions.all()
-        if permison.get(name='can view user'):
+        username = view.kwargs['username']
+        print(username)
+        # user = User.objects.get(id = request.user.id)
+        user = User.objects.get(username = username)
+        branch = user.branch
+        # group = list(user.groups.all())
+        
+        if  request.user.groups.filter(name='Operational Manager').exists():
             return True
-        else:
-            return False
+        # permissions = Permission.objects.filter(group__user = request.user).filter(name='can view attendance')
+        # return True if permissions.exists() else False
+        if Permission.objects.filter(group__user = request.user).filter(name='can view user'):
+            if branch == request.user.branch:
+                return True
+        
+        return False
 
 class UpdateUserGroup(BasePermission):
     def has_permission(self, request, view, **kwargs):
@@ -36,6 +45,7 @@ class UpdateUserGroup(BasePermission):
         user = User.objects.get(id=request.user.id)
 
         group = list(user.groups.all())
+        print("update group")
         permison = group[0].permissions.all()
         if permison.get(name='can update users group'):
             return True
@@ -44,12 +54,20 @@ class UpdateUserGroup(BasePermission):
 
 
 class DeleteUser(BasePermission):
-    def has_permission(self, request, view, **kwargs):
-        user = User.objects.get(id=request.user.id)
-
-        group = list(user.groups.all())
-        permison = group[0].permissions.all()
-        if permison.get(name='can delete user'):
+    def has_permission(self, request, view):
+        pk = int(view.kwargs['id'])
+        # user = User.objects.get(id = request.user.id)
+        user = User.objects.get(id = pk)
+        branch = user.branch
+        # group = list(user.groups.all())
+        
+        if  request.user.groups.filter(name='Operational Manager').exists():
             return True
-        else:
-            return False
+        # permissions = Permission.objects.filter(group__user = request.user).filter(name='can view attendance')
+        # return True if permissions.exists() else False
+        if Permission.objects.filter(group__user = request.user).filter(name='can view leave request'):
+            if branch == request.user.branch:
+                return True
+        
+        return False
+        

@@ -18,9 +18,14 @@ urlpatterns = [
         "attend/",
         include("attendanceregistersystem.attendance.urls", namespace="attendance"),
     ),
+    path(
+        "reset/",
+        include("attendanceregistersystem.resetPassword.urls", namespace="reset"),
+    ),
     path("accounts/", include("allauth.urls")),
     url(r'^auth/', include('djoser.urls')),
-    url(r'^auth/', include('djoser.urls.authtoken')),     
+    url(r'^auth/', include('djoser.urls.authtoken')),  
+    url(r'^rest-auth/', include('rest_auth.urls')),  
     # Your stuff: custom urls includes go here
 ] + static(
     settings.MEDIA_URL, document_root=settings.MEDIA_ROOT

@@ -50,9 +50,9 @@ class ViewAttendance(BasePermission):
         for grp in group:
             permison = grp.permissions.all()
             # print(permison)
-        
+
             if  permison.get(name='can view attendance'):
-                if branch == requested_user.branch or om in group: 
+                if branch == request.user.branch or om in group: 
                     return True
             else:
                 return False
@@ -148,7 +148,7 @@ class CanAddLeaveType(BasePermission):
         user = User.objects.get(id = request.user.id)
         group = list(user.groups.all())
         for grp in group:
-            permison = group.permissions.all()
+            permison = grp.permissions.all()
     
             if request.method == 'POST' and permison.get(name='can add leave type'):
                 return True

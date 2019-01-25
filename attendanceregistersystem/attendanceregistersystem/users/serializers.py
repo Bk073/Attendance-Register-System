@@ -33,7 +33,7 @@ class GroupSerializer(serializers.ModelSerializer):
 class PermissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Permission
-        fields = ('permission',)
+        fields = ('id','name',)
 
 
 class UserSerializers(serializers.ModelSerializer):
@@ -79,18 +79,19 @@ class UserSerializers(serializers.ModelSerializer):
 
 
 class UserUpdateSerializer(serializers.ModelSerializer):
+    # group = GroupSerializer(many=True, partial=True)
     class Meta:
         model = User
-        fields = ('id','branch','groups')
+        fields = ('groups',)
         # depth = 1
-    def update(self, instance, validated_data):
-        id = validated_data.pop['id']
-        user = User.objects.get(id=id)
-        # validated_data['password'] =make_password(validated_data.pop('password'))
-        User.objects.filter(pk=instance.id)\
-                            .update(**validated_data)
-        # user.update(**validated_data)
-        return user
+    # def update(self, instance, validated_data):
+    #     id = validated_data.pop['id']
+    #     user = User.objects.get(id=id)
+    #     # validated_data['password'] =make_password(validated_data.pop('password'))
+    #     User.objects.filter(pk=instance.id)\
+    #                         .update(**validated_data)
+    #     # user.update(**validated_data)
+    #     return user
 
 
 class UserSerializer(serializers.ModelSerializer):

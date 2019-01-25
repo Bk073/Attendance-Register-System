@@ -12,7 +12,7 @@ ALLOWED_HOSTS = [
     "localhost",
     "0.0.0.0",
     "127.0.0.1",
-    "86b6acec.ngrok.io",
+    "46e1c884.ngrok.io",
 ]
 
 # CACHES

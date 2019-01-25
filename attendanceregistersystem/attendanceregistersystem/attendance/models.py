@@ -4,7 +4,7 @@ from django.db.models import CharField, IntegerField, EmailField, DateField, Aut
 
 
 class Attendance(models.Model):
-    check_in = models.TimeField(auto_now=False, null=True, blank=True)
+    check_in = models.TimeField(auto_now=False, null=True, blank=True,)
     check_in_date = models.DateField(auto_now=True)
     check_out = models.TimeField(auto_now=False, null=True, blank=True)
     user = ForeignKey(User, on_delete=models.CASCADE)

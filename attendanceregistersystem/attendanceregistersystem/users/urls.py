@@ -28,19 +28,18 @@ urlpatterns = [
         r'update/(?P<pk>\d+)/$',
         view=user_update_view, name="update"
     ),
-    url(
-        r'reset/password/(?P<pk>\d+)/$',
-        view=user_update_view, name="reset"
-    ),
+    # url(
+    #     r'reset/password/(?P<pk>\d+)/$',
+    #     view=user_update_view, name="reset"
+    # ),
      url(
         r'update-group/(?P<pk>\d+)/$',
         view=user_group_update_view, name="update"
     ),
     url(
-        r'delete/(?P<pk>\d+)/$',
+        r'delete/(?P<id>\d+)/$',
         view=user_delete_view, name="delete"
     ),
-    path("<str:username>/", view=user_detail_view, name="detail"),
     url(
         r'^v1/login/$',
         view=user_login_view,
@@ -58,4 +57,6 @@ urlpatterns = [
     path("v1/permission", view = permission_create_view, name="create-permission"),
     path("v1/branch", view =branch_list_view, name="branch_list"),
     path("v1/groupsList", view=groups_list_view, name="groups_list"),
+    path("<str:username>/", view=user_detail_view, name="detail"),
+    # url(r'^(?P<username>\w+)/$', view=user_detail_view, name="detail"),
 ]  

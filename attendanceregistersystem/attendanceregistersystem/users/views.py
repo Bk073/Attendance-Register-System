@@ -52,9 +52,10 @@ class UserCreateView(generics.CreateAPIView):
 user_create_view = UserCreateView.as_view()
 
 class UserListView(generics.ListAPIView):
-    permission_classes= (ViewUser,)
+    # permission_classes= (ViewUser,)
+    permission_classes = (AllowAny,)
     # permission_classes= (IsAuthenticated,)
-    serializer_class = UserSerializers
+    serializer_class = UserSerializer
     # queryset = User.objects.all()
     # def get(self, request, *args, **kwargs):
     #     return self.list(request, *args, **kwargs)
@@ -83,9 +84,17 @@ class UserDetailView(generics.RetrieveAPIView):
     # slug_field = "username"
     # slug_url_kwarg = "username"
     lookup_field = 'username'
-    permission_class = (ViewUser,) 
-    queryset = User.objects.all()
+    # lookup_url_kwarg ='username'
+    permission_classes = (ViewUser,)
+    # permission_classes = (AllowAny,)  
+    # queryset = User.objects.all()
     serializer_class = UserSerializer
+
+    def get_queryset(self):
+        username = self.kwargs['username']
+        # username = self.lookup_field
+        queryset = User.objects.filter(username = username)
+        return queryset
 
 user_detail_view = UserDetailView.as_view()
 
@@ -135,21 +144,32 @@ class UserUpdateView(GenericAPIView, UpdateModelMixin):
 # user_update_view = UserUpdateView.as_view({'get': 'retrieve', 'patch':'partial_update'})
 user_update_view = UserUpdateView.as_view()
 
+# class UserGroupUpdateView(GenericAPIView, UpdateModelMixin):
+#     serializer_class = UserUpdateSerializer  
+#     permission_classes = (UpdateUserGroup, )  
+#     # queryset = User.objects.all()
+#     lookup_field = 'pk'
 
-class UserGroupUpdateView(GenericAPIView, UpdateModelMixin):
+#     # def partial_update(self, request, pk=None):
+#     #     serialized = UserSerializers(request.user, data=request.data, partial=True)
+#     #     return Response(status=status.HTTP_202_ACCEPTED)
+#     def patch   (self, request, *args, **kwargs):
+#         return self.partial_update(request, *args, **kwargs)
+    
+#     def get_queryset(self):
+#         print("hello")
+#         id = self.kwargs['pk']
+#         queryset = User.objects.filter(id = id)
+#         print(queryset)
+#         return queryset
+
+class UserGroupUpdateView(generics.UpdateAPIView):
     serializer_class = UserUpdateSerializer  
     permission_classes = (UpdateUserGroup, )  
     queryset = User.objects.all()
-    # lookup_field = 'username'
-
-    # def partial_update(self, request, pk=None):
-    #     serialized = UserSerializers(request.user, data=request.data, partial=True)
-    #     return Response(status=status.HTTP_202_ACCEPTED)
-    def put(self, request, *args, **kwargs):
-        return self.partial_update(request, *args, **kwargs)
 
 # user_update_view = UserUpdateView.as_view({'get': 'retrieve', 'patch':'partial_update'})
-user_group_update_view = UserUpdateView.as_view()
+user_group_update_view = UserGroupUpdateView.as_view()
 
 
 class UserRedirectView(LoginRequiredMixin, RedirectView):
@@ -258,9 +278,10 @@ class GroupCreateView(generics.CreateAPIView):
 
 groups_create_view = GroupCreateView.as_view()
 
-class PermissionCreateView(generics.CreateAPIView):
+class PermissionCreateView(generics.ListCreateAPIView):
     permission_classes = (AllowAny,)
     serializer_class = PermissionSerializer
+    queryset = Permission.objects.all()
     # login_url = '../../users/v1/login/'
 
     def create(self, request, *args, **kwargs):
@@ -295,7 +316,7 @@ groups_list_view = GroupList.as_view()
 class UserDeleteView(generics.DestroyAPIView):
     serializer_class = UserSerializers
     permission_classes = (DeleteUser,)
-    # lookup_url_kwarg = "id"
+    lookup_url_kwarg = "id"
     queryset = User.objects.all()
 
 

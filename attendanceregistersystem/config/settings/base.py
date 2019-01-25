@@ -76,6 +76,7 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     'attendanceregistersystem.users.apps.UsersAppConfig',
     'attendanceregistersystem.attendance.apps.AttendanceConfig',
+    'attendanceregistersystem.resetPassword.apps.ResetpasswordConfig',
     # Your stuff: custom apps go here
     'phonenumber_field',
 ]
@@ -273,15 +274,20 @@ EMAIL_HOST_PASSWORD = 'butt3rfly98'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 DJOSER = {
-    'PASSWORD_RESET_CONFIRM_URL': 'password/reset/confirm/{uid}/{token}',
+    'PASSWORD_RESET_CONFIRM_URL': '#/New-Password/uid:{uid}&token:{token}',
+    # 'PASSWORD_RESET_CONFIRM_URL': 'auth/password/reset/confirm/{uid}/{token}',
     'ACTIVATION_URL': '#/activate/{uid}/{token}',
     'SEND_ACTIVATION_EMAIL': True,
     'SERIALIZERS': {},
     'PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND': True,
+    'PASSWORD_RESET_TIMEOUT_DAYS':1
 }
+ #auth/password/reset/ POST email
+ #reset/password/reset/confirm/{uid}/{token} -> GET , returns uid and token
+ #auth/password/reset/confirm POST uid, token, new_password
 
-
-
+PASSWORD_RESET_TIMEOUT_DAYS=1
 
 CORS_ORIGIN_ALLOW_ALL = True
+
 

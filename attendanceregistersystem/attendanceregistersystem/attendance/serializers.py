@@ -9,6 +9,8 @@ class MakeAttendanceSerializer(serializers.ModelSerializer):
     # user = serializers.PrimaryKeyRelatedField(
     #     many=True, queryset=User.objects.all())
     #  user = serializers.ReadOnlyField()
+    check_in = serializers.TimeField(format="%H:%M:%S")
+    check_out = serializers.TimeField(format="%H:%M:%S")
     user = UserSerializers()
     class Meta:
         model = Attendance

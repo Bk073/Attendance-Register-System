@@ -72,6 +72,7 @@ class UserAttendance(generics.ListAPIView):
         om = Group.objects.get(name='Operational Manager')
         if om in group:
             queryset= Attendance.objects.all()
+            print(queryset)
             return queryset
         else:
             queryset= Attendance.objects.filter(user__branch=user.branch)
