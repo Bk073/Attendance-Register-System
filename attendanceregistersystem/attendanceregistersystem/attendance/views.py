@@ -43,19 +43,28 @@ class MakeAttendance(generics.ListCreateAPIView):
 
 
 class UserDay(generics.CreateAPIView):
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticated,)
 
-    # @receiver(post_save, sender=LeaveRequest)
-    def post(self, request, *args, **kwargs):
-        leave_reqs = LeaveRequest.objects.filter(user=request.user)
-        leave_type =  leave_req.types_of_leave
-        days = leave.date_from - leave.date_to
-        user_leave = UserDays.objects.get_or_create(user = request.user, leave_type=leave_type)
-        user_leave.days_taken = TypesOfLeave.get(leave_type=leave_type).total_days - days
+    @receiver(post_save, sender=LeaveRequest)
+    def reduce_user_days(instance, sender ,**kwargs):
+        # leave_req = LeaveRequest.objects.filter(user=instance.user)
+        status = getattr(instance, 'status', None)
+        leave_id = getattr(instance, 'leave_id', None)
+        date_to = getattr(instance, 'date_to', None)
+        date_from = getattr(instance, 'date_from', None)
+        leave_type =  instance.types_of_leave
+        days = date_from - date_to
+        user = User.objects.get(id=instance.user.id)
+        print(user)
+        leave = TypesOfLeave.objects.get(leave_type=leave_type)
+        user_leave, created = UserDays.objects.get_or_create(user=user, leave_type=leave)
+        #days_left
+        print('days:', days)
+        user_leave.days_left = leave.total_days - days.days
         user_leave.save()
 
 
-class UserDays(generics.ListAPIView):
+class UserDaysLeft(generics.ListAPIView):
     permission_classes = (ViewUserLeftDays,)
     serializer_class = UserDaySerializer
     queryset = UserDays.objects.all()
@@ -111,7 +120,9 @@ class MakeLeaveRequest(generics.CreateAPIView):
         return resp
 
 # post_save.connect(receiver=UserDay.post, sender=LeaveRequest)
+# import django.dispatch
 
+# leave_response = django.dispatch.Signal(providing_args=["id"])
 
 class AcceptRequest(APIView):
     permission_classes = (AcceptLeaveRequest,)
@@ -129,6 +140,7 @@ class AcceptRequest(APIView):
             leave_request.save()
             
         print(leave_request.status)
+        # leave_response.send(sender=LeaveRequest, id=id)
         
         
         return Response({'ok':'ok'}, status=status.HTTP_201_CREATED)
@@ -136,7 +148,7 @@ class AcceptRequest(APIView):
     # def get(self, request, format=None):
     #     leave_request = LeaveRequest.objects.all()
     #     return Response(leave_request)
-
+post_save.connect(receiver=UserDay.reduce_user_days, sender=LeaveRequest)
 
 class  TypesOfLeaveList(generics.ListCreateAPIView):
     queryset = TypesOfLeave.objects.all()

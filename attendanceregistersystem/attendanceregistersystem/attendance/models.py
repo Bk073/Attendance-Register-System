@@ -15,7 +15,6 @@ class Attendance(models.Model):
     # def __str__(self):
     #     return self.
 
-
 class TypesOfLeave(models.Model):
     leave_type_id = models.AutoField(primary_key=True)
     leave_type = models.CharField(max_length=255, null=True, blank=True)
@@ -54,7 +53,11 @@ class LeaveRequest(models.Model):
 class UserDays(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     leave_type = models.ForeignKey(TypesOfLeave, on_delete=models.CASCADE)
-    days_taken = models.IntegerField(null=False, blank=False, default=0)
+    days_left = models.IntegerField(null=False, blank=False, default=0)
 
     class Meta:
         default_permissions = ()
+    
+
+    def __str__(self):
+        return '%s %s' % (self.user, self.leave_type)

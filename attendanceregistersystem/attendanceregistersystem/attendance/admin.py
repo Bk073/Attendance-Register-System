@@ -5,3 +5,4 @@ from .models import Attendance, TypesOfLeave, LeaveRequest, UserDays
 admin.site.register(Attendance)
 admin.site.register(TypesOfLeave)
 admin.site.register(LeaveRequest)
+admin.site.register(UserDays)
