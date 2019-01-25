@@ -28,6 +28,9 @@ class ViewUser(BasePermission):
         user = User.objects.get(username = username)
         branch = user.branch
         # group = list(user.groups.all())
+
+        if username == request.user.username:
+            return True
         
         if  request.user.groups.filter(name='Operational Manager').exists():
             return True

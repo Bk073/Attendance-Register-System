@@ -169,6 +169,7 @@ class UserGroupUpdateView(generics.UpdateAPIView):
     queryset = User.objects.all()
 
 # user_update_view = UserUpdateView.as_view({'get': 'retrieve', 'patch':'partial_update'})
+
 user_group_update_view = UserGroupUpdateView.as_view()
 
 

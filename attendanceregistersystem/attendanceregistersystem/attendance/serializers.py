@@ -50,12 +50,6 @@ class MakeLeaveRequestSerializer(serializers.ModelSerializer):
          
     #     return value
 
-class LeaveRequestSerializer(serializers.ModelSerializer):
-    user = UserSerializers()
-    class Meta:
-        model = LeaveRequest
-        fields = ('leave_id','date_to', 'date_from', 'description', 'types_of_leave', 'status', 'date_submission', 'user')
-
 
 class UserDaySerializer(serializers.ModelSerializer):
 
@@ -70,4 +64,11 @@ class TypesOfLeaveSerializer(serializers.ModelSerializer):
         model = TypesOfLeave
         fields = ('leave_type_id', 'leave_type', 'total_days',)
     
+
+class LeaveRequestSerializer(serializers.ModelSerializer):
+    user = UserSerializers()
+    types_of_leave = TypesOfLeaveSerializer()
+    class Meta:
+        model = LeaveRequest
+        fields = ('leave_id','date_to', 'date_from', 'description', 'types_of_leave', 'status', 'date_submission', 'user')
 

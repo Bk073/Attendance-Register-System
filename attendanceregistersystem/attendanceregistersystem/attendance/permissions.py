@@ -157,4 +157,22 @@ class CanAddLeaveType(BasePermission):
             else:
                 return False
         
+class ViewUserLeftDays(BasePermission):
+    def has_permission(self, request, view):
+        pk = int(view.kwargs['id'])
+        # user = User.objects.get(id = request.user.id)
+        user = User.objects.get(id = pk)
+        branch = user.branch
+        # group = list(user.groups.all())
+        if pk == request.user.id:
+            return True
+
+        if  request.user.groups.filter(name='Operational Manager').exists():
+            return True
+        # permissions = Permission.objects.filter(group__user = request.user).filter(name='can view attendance')
+        # return True if permissions.exists() else False
+        if Permission.objects.filter(group__user = request.user).filter(name='can view user left days'):
+            if branch == request.user.branch:
+                return True
         
+        return False
