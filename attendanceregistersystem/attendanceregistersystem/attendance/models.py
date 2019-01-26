@@ -40,7 +40,7 @@ class LeaveRequest(models.Model):
     description = models.TextField(null=True, blank=True, help_text="Describe your leave request")
     date_submission = models.DateField(blank=True, null=True, auto_now=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    responded_by = models.OneToOneField(User, on_delete=models.CASCADE, related_name="responded_by", null=True, blank=True)
+    responded_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="responded_by", null=True, blank=True)
     types_of_leave = models.ForeignKey(TypesOfLeave, on_delete=models.CASCADE, null=True, blank=True)
     
     class Meta:

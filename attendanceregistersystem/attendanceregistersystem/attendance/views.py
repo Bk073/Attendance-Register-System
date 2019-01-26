@@ -12,6 +12,7 @@ from django.db.models.signals import post_save
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.timezone import localdate, localtime, now
 from attendanceregistersystem.users.models  import User, Branch
+from attendanceregistersystem.users.serializers import UserSerializer
 from rest_framework.response import Response
 from django.contrib.auth.models import Group, Permission
 
@@ -49,25 +50,38 @@ class UserDay(generics.CreateAPIView):
     def reduce_user_days(instance, sender ,**kwargs):
         # leave_req = LeaveRequest.objects.filter(user=instance.user)
         status = getattr(instance, 'status', None)
-        leave_id = getattr(instance, 'leave_id', None)
-        date_to = getattr(instance, 'date_to', None)
-        date_from = getattr(instance, 'date_from', None)
-        leave_type =  instance.types_of_leave
-        days = date_from - date_to
-        user = User.objects.get(id=instance.user.id)
-        print(user)
-        leave = TypesOfLeave.objects.get(leave_type=leave_type)
-        user_leave, created = UserDays.objects.get_or_create(user=user, leave_type=leave)
-        #days_left
-        print('days:', days)
-        user_leave.days_left = leave.total_days - days.days
-        user_leave.save()
+        if status == 'approved':
+            leave_id = getattr(instance, 'leave_id', None)
+            date_to = getattr(instance, 'date_to', None)
+            date_from = getattr(instance, 'date_from', None)
+            leave_type =  instance.types_of_leave
+            days = date_from - date_to
+            user = User.objects.get(id=instance.user.id)
+            leave = TypesOfLeave.objects.get(leave_type=leave_type)
+            user_leave, created = UserDays.objects.get_or_create(user=user, leave_type=leave)
+            #days_left
+            user_leave.days_left = leave.total_days - days.days
+            user_leave.save()
 
 
 class UserDaysLeft(generics.ListAPIView):
-    permission_classes = (ViewUserLeftDays,)
+    # permission_classes = (ViewUserLeftDays,)
+    permission_classes = (AllowAny,)
     serializer_class = UserDaySerializer
-    queryset = UserDays.objects.all()
+    # lookup_field = 'username'
+    # queryset = UserDays.objects.all()
+
+    def get_queryset(self):
+        leave_type = self.kwargs.get('leavetype')
+        id = self.kwargs.get('id')
+        print('leave_type', leave_type)
+        print('id', id)
+        user = User.objects.get(id=id)
+        leave_type= TypesOfLeave.objects.get(leave_type=leave_type)
+        # username = self.lookup_field
+        # queryset = User.objects.(id = id)
+        queryset = UserDays.objects.filter(user=user, leave_type=leave_type)
+        return queryset
 
 
 class UserAttendance(generics.ListAPIView):

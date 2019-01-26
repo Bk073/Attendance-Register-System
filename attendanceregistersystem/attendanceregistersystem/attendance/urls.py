@@ -25,7 +25,12 @@ urlpatterns = [
         name="user-leave-request-list"
     ),
     url(
-        r'^v1/userdays',
+        r'^v1/userdays/$',
+        UserDaysLeft.as_view(),
+        name="userdays"
+    ),
+    url(
+        r'^v1/userdays/(?P<id>\d+)/(?P<leavetype>\w+)/$',
         UserDaysLeft.as_view(),
         name="userdays"
     ),
