@@ -3,6 +3,7 @@ from attendanceregistersystem.attendance.models import Attendance, LeaveRequest,
 from attendanceregistersystem.users.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from attendanceregistersystem.users.serializers import UserSerializers
+import datetime 
 
 class MakeAttendanceSerializer(serializers.ModelSerializer):
 
@@ -11,11 +12,33 @@ class MakeAttendanceSerializer(serializers.ModelSerializer):
     #  user = serializers.ReadOnlyField()
     check_in = serializers.TimeField(format="%H:%M:%S")
     check_out = serializers.TimeField(format="%H:%M:%S")
+    late = serializers.SerializerMethodField()
     user = UserSerializers()
     class Meta:
         model = Attendance
-        fields  = ('check_in', 'check_in_date', 'check_out', 'user',)
+        fields  = ('check_in', 'check_in_date', 'check_out', 'user', 'late')
 
+    def get_late(self, obj):
+        if obj.check_in >= datetime.time(12,0,0):
+            return True
+        else:
+            return False
+
+#source 
+
+class CustomAttendanceSerializer(serializers.Serializer):
+    check_in = serializers.TimeField(format="%H:%M:%S")
+    check_out = serializers.TimeField(format="%H:%M:%S")
+    check_in_date=serializers.DateField()
+    username = serializers.CharField(source='user.username')
+    late = serializers.SerializerMethodField()
+
+    def get_late(self, obj):
+        if obj.check_in >= datetime.time(12,0,0):
+            return True
+        else:
+            return False
+    
 
 class MakeLeaveRequestSerializer(serializers.ModelSerializer):
     # date_to = serializers.DateField()
@@ -57,7 +80,7 @@ class TypesOfLeaveSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TypesOfLeave
-        fields = ('leave_type_id', 'leave_type', 'total_days',)
+        fields = ('leave_type_id', 'leave_type', 'total_days','group')
     
 
 class LeaveRequestSerializer(serializers.ModelSerializer):
@@ -74,3 +97,29 @@ class UserDaySerializer(serializers.ModelSerializer):
     class Meta:
         model = UserDays
         fields = ('leave_type','user', 'days_left',)
+
+
+class AttendanceDateSerializer(serializers.Serializer):
+    date_to = serializers.DateField()
+    date_from = serializers.DateField()
+    class Meta:
+        fields = ("date_to", "date_from")
+
+    def create(self, validated_data):
+        # print("Attendance:", Attendance.objects.filter(check_in_date__range=[validated_data['date_to'], validated_data['date_from']]))
+        return Attendance.objects.filter(check_in_date__range=[validated_data['date_to'], validated_data['date_from']])
+
+class UserAttendanceDateSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    date_to = serializers.DateField()
+    date_from = serializers.DateField()
+    class Meta:
+        fields = ("username", "date_to", "date_from")
+
+    def create(self, validated_data):
+        # print("Attendance:", Attendance.objects.filter(check_in_date__range=[validated_data['date_to'], validated_data['date_from']]))
+        return Attendance.objects.filter(
+            user__username=validated_data['username'],
+            check_in_date__range=[validated_data['date_to'],
+            validated_data['date_from']]
+        )

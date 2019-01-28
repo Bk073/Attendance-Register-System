@@ -1,11 +1,11 @@
 from django.conf.urls import url
-from attendanceregistersystem.attendance.views import MakeAttendance, LeaveRequestList, MakeLeaveRequest, UserDaysLeft, AcceptRequest, UserAttendance, TypesOfLeaveList, UsernameAttendance, UserLeaveRequest
+from attendanceregistersystem.attendance.views import MakeAttendance, LeaveRequestList, MakeLeaveRequest, UserDaysLeft, AcceptRequest, UserAttendance, TypesOfLeaveList, UsernameAttendance, UserLeaveRequest, UserDateAttendance, DateAttendance
 
 app_name = "attendance"
     
 urlpatterns = [
     url(
-        r'^v1/attendance',
+        r'^v1/attendance/$',
         MakeAttendance.as_view(),
         name="make-attendance"
     ),
@@ -56,8 +56,18 @@ urlpatterns = [
         name='viewLeaveRequest'
     ),
     url(
-        r'v1/types-of-leave/',
+        r'v1/types-of-leave/$',
         TypesOfLeaveList.as_view(),
         name='TypesOfLeaveList'
+    ),
+    url(
+        r'v1/attendance-date-wise/$',
+        DateAttendance.as_view(),
+        name='Datewise attendance'
+    ),
+    url(
+        r'v1/user-attendance-date-wise/$',
+        UserDateAttendance.as_view(),
+        name='User Datewise attendance'
     ),
 ]

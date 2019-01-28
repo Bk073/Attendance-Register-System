@@ -1,6 +1,7 @@
 from django.db import models
 from attendanceregistersystem.users.models import User
 from django.db.models import CharField, IntegerField, EmailField, DateField, AutoField, ForeignKey, CASCADE
+from django.contrib.auth.models import Group
 
 
 class Attendance(models.Model):
@@ -19,6 +20,7 @@ class TypesOfLeave(models.Model):
     leave_type_id = models.AutoField(primary_key=True)
     leave_type = models.CharField(max_length=255, null=True, blank=True)
     total_days = models.IntegerField(null=False, blank=False, default=0)
+    group = ForeignKey(Group, on_delete=models.CASCADE)
 
     class Meta:
         default_permissions = ()

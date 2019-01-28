@@ -56,6 +56,7 @@ class User(AbstractUser):
     )
     email = EmailField(blank=True, null=True, verbose_name="Email")
     date_of_birth = DateField(blank=True, null=True)
+    gender = CharField(max_length=16, blank=True, null=True)
     branch = ForeignKey(Branch, on_delete=CASCADE, null=True)
     class Meta:
         default_permissions = () 

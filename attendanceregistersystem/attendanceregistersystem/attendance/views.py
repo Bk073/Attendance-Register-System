@@ -3,7 +3,7 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import status
-from .serializers import MakeAttendanceSerializer, MakeLeaveRequestSerializer, UserDaySerializer, TypesOfLeaveSerializer, LeaveRequestSerializer
+from .serializers import MakeAttendanceSerializer, MakeLeaveRequestSerializer, UserDaySerializer, TypesOfLeaveSerializer, LeaveRequestSerializer, AttendanceDateSerializer, CustomAttendanceSerializer, UserAttendanceDateSerializer
 from .permissions import AttendancePermissons, AcceptLeaveRequest, ViewAttendance, ViewUserLeaveRequest, CanAddLeaveType, ViewUserAttendance, ViewLeaveRequest, ViewUserLeftDays
 from .models import Attendance, LeaveRequest, UserDays, TypesOfLeave
 from rest_framework.authtoken.models import Token
@@ -87,6 +87,7 @@ class UserDaysLeft(generics.ListAPIView):
 class UserAttendance(generics.ListAPIView):
     permission_classes = (ViewAttendance,)
     serializer_class = MakeAttendanceSerializer
+    # serializer_class = CustomAttendanceSerializer
     # queryset = Attendance.objects.all()
 
     def get_queryset(self):
@@ -222,3 +223,29 @@ class UsernameAttendance(generics.ListAPIView):
         id=self.kwargs.get(self.lookup_url_kwarg)
         queryset = Attendance.objects.filter(user__id=id)
         return queryset
+
+
+class DateAttendance(generics.CreateAPIView):
+    permission_classes=(AllowAny,)
+    serializer_class = AttendanceDateSerializer
+    
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.save()
+        attendance_list = CustomAttendanceSerializer(data, many=True)
+        print(attendance_list)
+        return Response({'attendance':attendance_list.data}, status=status.HTTP_201_CREATED)
+
+class UserDateAttendance(generics.CreateAPIView):
+    permission_classes=(AllowAny,)
+    serializer_class = UserAttendanceDateSerializer
+    
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.save()
+        print(data.count())
+        attendance_list = CustomAttendanceSerializer(data, many=True)
+        # print(attendance_list)
+        return Response({'attendance':attendance_list.data}, status=status.HTTP_201_CREATED)

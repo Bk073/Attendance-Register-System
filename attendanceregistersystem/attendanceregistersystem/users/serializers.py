@@ -55,7 +55,7 @@ class UserSerializers(serializers.ModelSerializer):
     # date_of_birth = serializers.DateField()
     class Meta:
         model = User
-        fields = ('id', 'username', 'password','first_name', 'last_name','address','contact', 'email', 'date_of_birth', 'branch','groups',)
+        fields = ('id', 'username', 'password','first_name', 'last_name','address','contact', 'email', 'date_of_birth', 'gender','branch','groups',)
         # depth = 1
 
     def create(self, validated_data):
@@ -99,13 +99,13 @@ class UserSerializer(serializers.ModelSerializer):
     branch = BranchSerializers()
     class Meta:
         model = User
-        fields = ('id', 'username', 'password','first_name', 'last_name','address','contact', 'email', 'date_of_birth', 'branch','groups')
+        fields = ('id', 'username', 'password','first_name', 'last_name','address','contact', 'email', 'date_of_birth', 'gender', 'branch','groups')
         
 
 class UserSerializersDefault(serializers.Serializer):
     class Meta:
         model = User
-        fields = ('username', 'password','first_name', 'last_name','address','contact', 'email', 'date_of_birth', 'branch',)
+        fields = ('username', 'password','first_name', 'last_name','address','contact', 'email', 'date_of_birth', 'gender', 'branch',)
 
     def create(self, validated_data):
         # groups_data = validated_data.pop('groups')
