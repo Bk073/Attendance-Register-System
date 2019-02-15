@@ -226,7 +226,7 @@ class UsernameAttendance(generics.ListAPIView):
 
 
 class DateAttendance(generics.CreateAPIView):
-    permission_classes=(AllowAny,)
+    permission_classes=(IsAuthenticated,)
     serializer_class = AttendanceDateSerializer
     
     def create(self, request, *args, **kwargs):
@@ -238,7 +238,7 @@ class DateAttendance(generics.CreateAPIView):
         return Response({'attendance':attendance_list.data}, status=status.HTTP_201_CREATED)
 
 class UserDateAttendance(generics.CreateAPIView):
-    permission_classes=(AllowAny,)
+    permission_classes=(IsAuthenticated,)
     serializer_class = UserAttendanceDateSerializer
     
     def create(self, request, *args, **kwargs):

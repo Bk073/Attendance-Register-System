@@ -64,7 +64,7 @@ urlpatterns = [
         r'v1/attendance-date-wise/$',
         DateAttendance.as_view(),
         name='Datewise attendance'
-    ),
+    ), 
     url(
         r'v1/user-attendance-date-wise/$',
         UserDateAttendance.as_view(),

@@ -63,7 +63,6 @@ class UserListView(generics.ListAPIView):
     def get_queryset(self):
         user = self.request.user
         group = list(user.groups.all())
-        print(group[0])
         om = Group.objects.get(name='Operational Manager')
         if om in group:
             queryset= User.objects.all()
