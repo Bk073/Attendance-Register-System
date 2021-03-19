@@ -28,7 +28,7 @@ django-rest-auth==0.9.3
 django-rest-framework-roles==0.5
 django-role-permissions==2.2.1
 django-templated-mail==1.1.1
-djangorestframework==3.9.0
+djangorestframework==3.11.2
 djoser==1.4.0
 docutils==0.14
 factory-boy==2.11.1
